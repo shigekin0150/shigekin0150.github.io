@@ -3,7 +3,7 @@ let currentIndex = 0;
 let score = 0;
 let selectedChoices = [];
 
-const dataPath = 'data/sharing_and_visibilty_exams.json';
+const dataPath = 'data/sharing_and_visibility_exams.json';
 
 const startBtn = document.getElementById('start-btn');
 const quizContainer = document.getElementById('quiz-container');
