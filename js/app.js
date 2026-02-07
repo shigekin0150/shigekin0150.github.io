@@ -26,7 +26,7 @@ startBtn.addEventListener('click', async () => {
         document.getElementById('total-questions').textContent = questions.length;
         showQuestion();
     } catch (error) {
-        alert('エラー：data/combined_exam.json が見つからないか、正しくありません。');
+        alert('エラー：JSONが見つからないか、正しくありません。');
         console.error(error);
     }
 });
