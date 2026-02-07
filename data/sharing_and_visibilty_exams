@@ -1,0 +1,2945 @@
+[
+  {
+    "generated_at": "2026-02-04T21:42:39.216263+09:00",
+    "questions": [
+      {
+        "question_no": 1,
+        "status": "未回答",
+        "question_ja": "外部会計システムの請求書（Invoice）を表示するために外部オブジェクトを作成した。外部オブジェクトを参照する際、ユーザーは自分が参照を許可されている請求書レコードのみにアクセスできる必要がある。要件を満たすために必要な対応はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "会計システム側でデータアクセスを制限する",
+          "B": "外部データソースを OAuth 認証で会計システムに接続する",
+          "C": "外部オブジェクトへのアクセスをアカウントマネージャープロファイルのみに付与する",
+          "D": "Invoice オブジェクトに所有者ベース共有ルールを作成して可視性を付与する"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "外部オブジェクトの参照制御は、(1) 外部システム側のユーザー認可に基づく制御と、(2) Salesforce 側の外部オブジェクトへのオブジェクト権限付与の組み合わせで実現する。外部オブジェクトは通常の共有ルール（所有者/条件ベース共有）では制御できないため、共有ルール作成は解決にならない。"
+      },
+      {
+        "question_no": 2,
+        "status": "未回答",
+        "question_ja": "UC はカスタムの Invoice オブジェクトを作成した。標準の営業ユーザーは検索レイアウトでレコードを見つけられるが、詳細を開くと「レコード名／作成日／最終更新日」しか表示されない。一方、システム管理者は多数の項目が表示される。考えられる原因はどれか。",
+        "choices_ja": {
+          "A": "営業ユーザープロファイルに、残りの項目への項目レベルセキュリティ（FLS）が付与されていない",
+          "B": "営業ユーザーのロールに対するロールベース共有ルールが不足しており、項目アクセスを付与する必要がある",
+          "C": "営業ユーザープロファイルに割り当てられているページレイアウトが、項目を読み取り専用にしている",
+          "D": "組織の共有設定（OWD）が Private なので Public Read/Write に変更する必要がある"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "詳細画面に表示されない項目がある場合、まず疑うのは FLS（参照/編集可否）である。共有設定（レコードアクセス）やページレイアウトでは、FLS で不可の項目を表示できない。"
+      },
+      {
+        "question_no": 3,
+        "status": "未回答",
+        "question_ja": "UC は 200 社のディストリビューター向けに Partner Community を運用している。UC の顧客アカウントは各ディストリビューターに割り当てられており、カスタム Delivery オブジェクトの OWD は Private。あるディストリビューター配下の全ユーザーが、そのディストリビューターに割り当てられた全顧客の Delivery レコードにアクセスできるようにするには、どの助言が適切か。",
+        "choices_ja": {
+          "A": "ディストリビューターに一致する Delivery をディストリビューターのロールへ共有する条件ベース共有ルールを作成する",
+          "B": "ディストリビューターごとにパブリックグループを作成し、そのグループへ共有する条件ベース共有ルールを作成する",
+          "C": "Delivery レコードの所有者をディストリビューターのユーザーにする",
+          "D": "ディストリビュータープロファイル向けの共有セット（Sharing Set）で Delivery へのアクセスを付与する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Partner/Customer 向けの Experience Cloud では、アカウント/コンタクトとの関連（Lookup）に基づき外部ユーザーへレコードアクセスを付与できる「共有セット」が代表的な手段。外部ユーザーへ単純に共有ルールや所有者変更で対応すると要件や運用が破綻しやすい。"
+      },
+      {
+        "question_no": 4,
+        "status": "未回答",
+        "question_ja": "UC は規制対応のため、請求（Invoice）回収を管理する社内チームを新設し、そのチームのみが Invoice レコードにアクセスできるようにしたい。現状 Invoice は Account への Master-Detail の子で、関連リストはページレイアウトから外したが、一部プロファイルが Invoice オブジェクトにアクセスできてしまう。適切な対処はどれか。",
+        "choices_ja": {
+          "A": "Invoice の共有設定を Controlled by Parent から Private に変更し、未許可プロファイルから Invoice アクセスを外す",
+          "B": "Invoice にアクセスできない新規プロファイルを作成し、未許可ユーザーへ割り当てる",
+          "C": "Account- Invoice の Master-Detail を Lookup に置き換え、未許可プロファイルから Invoice アクセスを外す",
+          "D": "Invoice に「アクセスなし」を付与する権限セットを作成し、未許可ユーザーへ割り当てる"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "Master-Detail では親（Account）へのアクセスが子（Invoice）へ継承されるため、Invoice のみを切り離して制御したい要件に不向き。Lookup に変更してレコードアクセスを独立させ、必要なユーザーにのみオブジェクト権限・共有を付与する。"
+      },
+      {
+        "question_no": 5,
+        "status": "未回答",
+        "question_ja": "UC は 500 地域で研修を提供している。Operations Users チームは地域単位でコース設定・スケジュール・講師設定を管理し、Operations Manager にレポートする。Operations Manager は、Operations Users チームが所有する全ての Scheduled Course を編集できる必要がある。どう実現するか。",
+        "choices_ja": {
+          "A": "Scheduled Course に対して Operations Manager に「すべて変更（Modify All）」を付与する",
+          "B": "所有者ベース共有ルールで Scheduled Course を Operations Manager に共有する",
+          "C": "パブリックグループを作成し、Operations Manager と Operations Users を追加する",
+          "D": "ロール階層で Operations Users の上位に Operations Manager を配置する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "上司が部下のレコードを編集できる要件は、基本はロール階層（Grant Access Using Hierarchies）で満たす。Modify All は過剰権限になりやすい。"
+      },
+      {
+        "question_no": 6,
+        "status": "未回答",
+        "question_ja": "顧客の Social Security Number（SSN）を条件にした条件ベース共有ルールを作りたい。しかし Contact 共有ルール設定時にその項目が候補に出てこない。原因として考えられるものはどれか。",
+        "choices_ja": {
+          "A": "入力規則があるテキスト項目は共有ルールに使えない",
+          "B": "作成者のプロファイルに、その項目の FLS がない",
+          "C": "その項目が暗号化項目として設定されている",
+          "D": "Compliance 項目に対する権限がない"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "暗号化（Shield Platform Encryption など）された項目は、条件ベース共有ルールの条件として使用できない制約がある。"
+      },
+      {
+        "question_no": 7,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting はカスタム Contract オブジェクトを OWD=Private にする必要がある。所有者は Contract Origination Officer。Contract は案件ごとに特定の Underwriter に共有し、Underwriter は割り当てられた Contract のみ閲覧できる必要がある。適切な設計はどれか。",
+        "choices_ja": {
+          "A": "Contract から User への Master-Detail を作成し、Underwriter に自動共有する",
+          "B": "条件ベース共有ルールで Underwriter に共有する",
+          "C": "Apex Sharing Reason を作成し、Sharing Reason の条件で Underwriter に共有する",
+          "D": "Contract から User への Lookup を作成し、トリガで Contract__Share に共有レコードを作成する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "レコードごとに任意のユーザー（Lookup の値）へ共有する要件は、宣言的共有ルールでは扱いにくい。Lookup＋Apex Managed Sharing（_Share への DML）で、対象ユーザーへ個別共有を自動付与する。"
+      },
+      {
+        "question_no": 8,
+        "status": "未回答",
+        "question_ja": "UC は Service Cloud を導入している。Case に「Sensitive」フラグがあり、Case にアクセスできる全ユーザーは閲覧できるが、編集できるのは割り当てられた Case Assessor（Case のユーザー参照項目）のみ。どう実現するか。",
+        "choices_ja": {
+          "A": "権限セット",
+          "B": "カスタム Lightning コンポーネント（または画面のカスタム化）",
+          "C": "オブジェクト権限",
+          "D": "項目レベルセキュリティ（FLS）"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "FLS はプロファイル/権限セット単位での制御であり、レコード上の Lookup（Assessor）に一致するユーザーだけ編集可、という動的条件は満たせない。UI をカスタム化して編集可否を制御し、加えてサーバ側でも検証（Apex/Flow/Validation）を行うのが現実的。"
+      },
+      {
+        "question_no": 9,
+        "status": "未回答",
+        "question_ja": "UC は Customer Community で「Customer User Visibility」をオフにした。この設定をオフにすると影響を受けるコミュニティ機能はどれか。",
+        "choices_ja": {
+          "A": "新規 Customer Community ユーザーの作成",
+          "B": "他の外部ユーザーの検索",
+          "C": "内部ユーザーの検索",
+          "D": "自分のユーザープロファイル更新"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Customer/Community User Visibility を無効化すると、外部ユーザー同士が互いを検索・参照する機能が制限される。"
+      },
+      {
+        "question_no": 10,
+        "status": "未回答",
+        "question_ja": "UC はほぼ Private の共有モデルで、Opportunity へのアクセス付与プロセスが複雑。Sales Reporting チームの一部メンバーは、全ての Opportunity を常に参照できるが変更はできない必要がある。推奨はどれか。",
+        "choices_ja": {
+          "A": "「すべてのデータを参照（View All Data）」を付与する権限セットを作る",
+          "B": "Opportunity に対する「すべて参照（View All）」権限を付与する権限セットを作る",
+          "C": "Sales Reporting 用プロファイルに「View All Data」を付与する",
+          "D": "Opportunity の OWD を読み取り専用にする"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "特定オブジェクトだけ全件参照させたい場合は、そのオブジェクトの View All（参照のみ）を権限セットで付与するのが最小権限。View All Data は全オブジェクトに及ぶため過剰。"
+      },
+      {
+        "question_no": 11,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting は Private の Loan オブジェクト向けにカスタム「チーム」機能を作りたい。Custom Team に追加されたユーザーは Loan に読み取り専用、さらに Custom Team レコードが「Primary」の場合は読み取り/編集にしたい。要件を満たす方法はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Custom Team にトリガを作り、Loan__Share に共有レコードを Insert/Update する",
+          "B": "Loan に Apex Sharing Reason を作り、共有理由を識別できるようにする",
+          "C": "Loan に条件ベース共有ルールを作り、Custom Team のユーザーへ共有する",
+          "D": "Custom Team に所有者ベース共有ルールを作り、Loan を Custom Team 所有者へ共有する"
+        },
+        "correct_answers": [
+          "A",
+          "B"
+        ],
+        "explanation_ja": "Apex Managed Sharing により Loan__Share を制御し、共有理由（RowCause）として Apex Sharing Reason を使うと、運用/トラブルシュートが容易で、所有者変更時の挙動もコントロールしやすい。共有ルールは動的にユーザーを差し替える要件に不向き。"
+      },
+      {
+        "question_no": 12,
+        "status": "未回答",
+        "question_ja": "UC は Container と Case を OWD=Private にしている。Customer Community ユーザーが所有する Container/Case レコードへ、サポート担当（内部ユーザー）がアクセスできるようにするにはどうするか。",
+        "choices_ja": {
+          "A": "条件ベース共有ルールで、サポート責任者ロールと配下へ共有する",
+          "B": "ロール階層で自動的にアクセスできる",
+          "C": "所有者ベース共有ルールで、サポート責任者ロールと配下へ共有する",
+          "D": "Customer Community ユーザープロファイルの共有セットに基づく「共有グループ（Share Group）」を作成する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Customer Community（高ボリューム）で外部ユーザー所有レコードを内部ユーザーへ共有する場合、共有セットから作成される Share Group を用いる設計が一般的。"
+      },
+      {
+        "question_no": 13,
+        "status": "未回答",
+        "question_ja": "UC では Account と Contact は通常全社員が参照でき、Proposal（カスタム）は Account 所有者と上位者が参照できる。ただし一部 Proposal は機密で Strategic Proposals チームが管理し、Sales グループのうち所有者と Strategic チーム以外には見せたくない。どう設計するか。",
+        "choices_ja": {
+          "A": "Proposal 所有者を Strategic Deals キューにし、Account との関係を Master-Detail にする",
+          "B": "Proposal 所有者を Strategic Deals キューにし、所有者ベース共有ルールで Account 所有者へ共有する",
+          "C": "「階層を使ったアクセス付与（Grant Access Using Hierarchies）」を無効化し、Strategic チーム向け条件ベース共有ルールを作る",
+          "D": "「階層を使ったアクセス付与」を無効化し、Strategic チーム向け所有者ベース共有ルールを作る"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "上位ロール（マネージャ）に自動で見せたくないため、対象オブジェクトで Grant Access Using Hierarchies を無効化する。その上で Strategic チームに必要範囲を共有ルール（条件ベース）で付与する。"
+      },
+      {
+        "question_no": 14,
+        "status": "未回答",
+        "question_ja": "営業担当が手動共有で Opportunity を社内プリセールスに共有していた。その後、営業担当が異動し所有していた Opportunity が新担当へ一括移管された。プリセールスのアクセスはどうなるか。",
+        "choices_ja": {
+          "A": "暗黙共有により引き続きアクセスできる",
+          "B": "継承共有により引き続きアクセスできる",
+          "C": "チームアクセスにより引き続きアクセスできる",
+          "D": "アクセスできなくなる"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "手動共有（RowCause=Manual）は所有者変更で削除されるため、移管後はプリセールスはアクセスを失う。"
+      },
+      {
+        "question_no": 15,
+        "status": "未回答",
+        "question_ja": "Invoice（カスタム）は Account への Master-Detail の子。AR（売掛）チームは Invoice にアクセスが必要だが、Account を所有せず Account へのアクセスもない。Account OWD は Private。AR はリストビュー/レポート/グローバル検索で Invoice が見つからない。原因として考えられるものはどれか。",
+        "choices_ja": {
+          "A": "AR プロファイルに Invoice ページレイアウトを割り当てる必要がある",
+          "B": "AR プロファイルに Invoice の参照権限がない",
+          "C": "AR チームへ Account を共有する共有ルールが不足している",
+          "D": "AR チームへ Invoice を共有する共有ルールが不足している"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "Master-Detail の子は親へのアクセスが前提。AR は Account にアクセスできないため Invoice も見えない。Invoice を見せるには、まず関連する Account を AR に共有する必要がある。"
+      },
+      {
+        "question_no": 16,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks はロール階層を変更したところ、一部社員が所有していないレポートを閲覧できるようになった。原因を評価するためにアーキテクトが行うべきことはどれか。",
+        "choices_ja": {
+          "A": "社員としてログインし、ユーザーレコードでプロファイル/ロールを確認する",
+          "B": "システム管理者としてサンプル Account を開き、［共有］ボタンでアクセス権を確認する",
+          "C": "社員としてサンプル Account を開き、［共有］ボタンでアクセス権を確認する",
+          "D": "システム管理者として Field Accessibility Viewer を使い、Account のアクセス行列を見る"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "共有の原因特定には、管理者権限でレコードの共有詳細（共有ボタン）を確認し、どの共有要因（ロール階層/共有ルール/チーム等）で付与されたかを追うのが有効。"
+      },
+      {
+        "question_no": 17,
+        "status": "未回答",
+        "question_ja": "UC は顧客向け Shipment（カスタム）で配送追跡を提供している。顧客の年間配送数を Marketing チームが Account 上で参照できる必要があるが、Marketing は Shipment レコード自体へアクセスさせたくない。推奨はどれか。",
+        "choices_ja": {
+          "A": "Shipment を Controlled by Parent（Account）にし、Master-Detail とトリガで集計する",
+          "B": "Shipment を OWD=Private にし、Lookup とトリガで Account に集計値を書き戻す",
+          "C": "Shipment を Public にし、Process Builder と Lookup で実装する",
+          "D": "Shipment を OWD=Private にし、Master-Detail とロールアップ集計で Account に反映する"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Marketing に Shipment を見せずに Account に集計値だけ出すなら、Shipment は Private のままにし、Lookup＋トリガ等で Account の集計項目へ書き戻す。Master-Detail＋ロールアップだと Account アクセス者に Shipment が見える可能性が増える。"
+      },
+      {
+        "question_no": 18,
+        "status": "未回答",
+        "question_ja": "共有ルール作成時、「共有先」として選べる対象はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "ロール",
+          "B": "プロファイル",
+          "C": "パブリックグループ",
+          "D": "ユーザー"
+        },
+        "correct_answers": [
+          "A",
+          "C"
+        ],
+        "explanation_ja": "共有ルールはロール、パブリックグループ（およびテリトリー）に対して作成できる。プロファイルや個別ユーザーは共有先として選べない。"
+      },
+      {
+        "question_no": 19,
+        "status": "未回答",
+        "question_ja": "UC には多数のパートナーがおり、季節労働者に短期間だけコミュニティアクセスを付与したい。ユーザー作成/管理をパートナー側へ委譲（フェデレーション）する設計として適切なものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "各パートナーに Delegated External Administrators を割り当てる",
+          "B": "パートナーマネージャーに Modify Users 権限を付与する",
+          "C": "パートナーマネージャーに User オブジェクトの Read/Write 権限を付与する権限セットを作る",
+          "D": "外部ユーザーのセルフ登録（Self-Registration）を許可する"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "パートナーに外部ユーザー管理を委譲するなら、委任管理者（Delegated External Admin）やセルフ登録が代表的。Modify Users などの強権限付与は不適切。"
+      },
+      {
+        "question_no": 20,
+        "status": "未回答",
+        "question_ja": "UC は複雑案件支援のため Sales Engineers をパブリックグループに入れ、共有ルールでそのグループへ Opportunity（OWD=Private）を共有している。この設定の影響として正しいものはどれか。",
+        "choices_ja": {
+          "A": "パブリックグループに Sales Engineer が含まれるマネージャの部下もアクセスできる",
+          "B": "Sales Engineer のマネージャおよびロール階層上位者もアクセスできる",
+          "C": "同等ロールの Sales Engineer もアクセスできる",
+          "D": "Sales Engineer の直属部下もアクセスできる"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "共有ルールでレコードアクセスが付与されたユーザーの上位ロールは（対象オブジェクトで階層アクセスが有効なら）そのアクセスを継承するため、マネージャや上位者も参照できる。"
+      },
+      {
+        "question_no": 21,
+        "status": "未回答",
+        "question_ja": "Shipment（カスタム）の共有を適切に行うため Apex Managed Sharing を採用した。IT は過剰アクセスを懸念している。リスク低減のための推奨（機能/ベストプラクティス）はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Apex クラスで isShareable キーワードを使う",
+          "B": "テストクラスで runAs を使い、異なるユーザー/プロファイルでテストする",
+          "C": "Apex クラスで with sharing を使い、共有を強制する",
+          "D": "Apex クラスで isAccessible キーワードを使い、可視性を強制する"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "runAs によりユーザー文脈での共有挙動をテストできる。with sharing を適切に使い、ユーザーが本来持つレコードアクセスを尊重することで、想定外の全件参照などを防ぐ。"
+      },
+      {
+        "question_no": 22,
+        "status": "未回答",
+        "question_ja": "UC は 600 名の営業担当向けに 3 週間で展開予定。2 週目終了時に「User Role Limit Exceeded」。調査するとユーザー作成時に毎回新規ロールが作られていた。解決策として適切なものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "ロール階層を廃止し、Apex Managed Sharing でアクセス制御する",
+          "B": "Salesforce サポートに連絡し、許容ロール数の増枠を依頼する",
+          "C": "ユーザー作成時に自動でロールを作成しないよう、プロビジョニング手順/連携を見直す",
+          "D": "新規ロール作成後すぐに汎用ロールへ置き換える Apex を作る"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "まずはプロビジョニングの設計不備を是正し、不要なロール自動生成を止める。必要ならサポートへ増枠相談も可能。"
+      },
+      {
+        "question_no": 23,
+        "status": "未回答",
+        "question_ja": "UC は Partner Community ライセンスのディストリビューター網を拡大する。内部ユーザーは Delivery を OWD=Public Read Only で全件参照できるが、ディストリビューターが見られるレコードは制限したい。推奨はどれか。",
+        "choices_ja": {
+          "A": "ディストリビュータープロファイルから Read 権限を外す",
+          "B": "Delivery の外部 OWD（External OWD）を Private にする",
+          "C": "所有者ベース共有ルールでディストリビューターへ共有する",
+          "D": "条件ベース共有ルールでディストリビューターへ共有する"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "外部ユーザーが見られる範囲を絞る基本は External OWD を Private にし、共有セット/共有ルール等で必要分だけ開く。"
+      },
+      {
+        "question_no": 24,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting は独自データを Salesforce に保存する。Account 所有者は、自分または部下が所有する Invoice のみ閲覧できるようにしたい。検討すべき機能はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Account と Invoice の関係を Lookup にする",
+          "B": "Account と Invoice の関係を Master-Detail にする",
+          "C": "Workflow で Invoice__Share を Insert する",
+          "D": "Invoice の OWD を Private にする"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "Invoice を Account 所有者に全件見せないため、Master-Detail は避け、Lookup＋Invoice OWD=Private で所有者/共有を個別制御する。Workflow は共有オブジェクトのレコード作成に使えない。"
+      },
+      {
+        "question_no": 25,
+        "status": "未回答",
+        "question_ja": "Bob が PDF を［ファイル］の「Files Home（個人のプライベートライブラリ）」にアップロードした。誰が閲覧できるか。",
+        "choices_ja": {
+          "A": "Bob のみ",
+          "B": "Bob と Modify All Data を持つユーザー",
+          "C": "Bob と View All Data を持つユーザー",
+          "D": "Bob と Bob のロール階層上位者"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "個人のプライベートライブラリのファイルは、共有しない限りアップロードした本人のみ参照できる。"
+      },
+      {
+        "question_no": 26,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は地域アカウントを営業担当/営業マネージャから隠し、Sales Executive 以上のみアクセスできるようにしたい。Account OWD を Public Read/Write から Private に変更予定で、ロール階層は組織階層に一致。設計で考慮すべき点はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "地域アカウントに対し営業担当が Opportunity Team に追加されると Account へアクセスできる可能性がある",
+          "B": "地域アカウントの所有者は営業マネージャより上位ロールのユーザーにする必要がある",
+          "C": "地域アカウント保護のため Account の Apex Managed Sharing を無効化する必要がある",
+          "D": "Sales Executive が Sales Users 所有の Account を見るには共有ルールが必要である"
+        },
+        "correct_answers": [
+          "A",
+          "B"
+        ],
+        "explanation_ja": "アカウントの可視性制御では所有者のロール位置が重要。また Opportunity Team 等の経路で親 Account へ暗黙共有が発生しうるため、抜け道にならないよう考慮が必要。"
+      },
+      {
+        "question_no": 27,
+        "status": "未回答",
+        "question_ja": "要件：\n- Sales は全 Account を参照できるが編集は自分のものだけ。\n- Sales Manager は全 Account を参照でき、編集は自チーム分。\n- Service は RecordType=Prospect 以外の Account を参照できる。\nこれを満たす OWD 設定として推奨はどれか。",
+        "choices_ja": {
+          "A": "Public Read/Transfer",
+          "B": "Public Read Only",
+          "C": "Public Read Write",
+          "D": "Private"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "全件参照を広く許可しつつ編集は所有者/ロール階層等で制御するなら、Account OWD は Public Read Only が適切。Service の Prospect だけ見せない要件は「制限ルール（Restriction Rule）」などで対応する。"
+      },
+      {
+        "question_no": 28,
+        "status": "未回答",
+        "question_ja": "サポート担当が「過去 7 日の自分の未解決ケース」を表示するレポートを作成し、「Private Reports（非公開レポート）」フォルダに保存した。誰が閲覧・実行できるか。",
+        "choices_ja": {
+          "A": "作成者と View All Data を持つユーザー",
+          "B": "作成者と「My Private Reports」へのアクセス権を付与されたユーザー",
+          "C": "作成者のみ",
+          "D": "作成者とロール階層上位者"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "非公開（Private）レポートは作成者本人のみ閲覧・実行できる。"
+      },
+      {
+        "question_no": 29,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は大量データの一括インポートを行う。失敗リスク（ロック/共有計算等）を抑えたい。選択肢として適切なものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "ユーザーグループ階層を減らす",
+          "B": "バッチ内で ParentId ごとにレコードをグルーピングする",
+          "C": "共有計算（Sharing Calculation）を遅延（Defer）させる",
+          "D": "バッチサイズを増やす"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "ParentId 単位にまとめるとロック競合が減る。共有計算の遅延によりロード中の再計算/ロックを避けられる。"
+      },
+      {
+        "question_no": 30,
+        "status": "未回答",
+        "question_ja": "Opportunity の共有設定が Public Read Only の環境で、ユーザーが Account Team Member を追加している。Opportunity のアクセスレベルとして選べるものはどれか。",
+        "choices_ja": {
+          "A": "Private と Read Only",
+          "B": "Private",
+          "C": "Read Only と Read/Write",
+          "D": "Read Only"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "Account Team の Opportunity Access は（OWD 等により）Read Only/Read-Write の選択肢が提供される。"
+      },
+      {
+        "question_no": 31,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks の IT メンバーが、マネージドパッケージ内で外部システムへ Basic 認証で接続する統合を作っている。ユーザー名/パスワード等の資格情報を安全に保管する推奨方法はどれか。（3つ選択）",
+        "choices_ja": {
+          "A": "保護されたカスタム設定（Protected Custom Setting）に保存して Apex Callout で使用する",
+          "B": "Named Credentials に保存して Apex Callout で使用する",
+          "C": "Apex コード内に埋め込み（非管理者は見えない前提）",
+          "D": "暗号化項目を持つカスタムオブジェクトに保存する",
+          "E": "保護されたカスタムメタデータ（Protected Custom Metadata）に保存して Apex Callout で使用する"
+        },
+        "correct_answers": [
+          "A",
+          "B",
+          "E"
+        ],
+        "explanation_ja": "推奨は Named Credentials（認証情報管理とローテーションが容易）や、パッケージ側で保護できる Protected Custom Setting/Protected Custom Metadata。コード埋め込みは漏えいリスクが高い。暗号化項目でも閲覧権限次第で見えてしまう。"
+      },
+      {
+        "question_no": 32,
+        "status": "未回答",
+        "question_ja": "共有設定：Account=Private、Contact=Controlled by Parent、Opportunity=Private、Case=Private。Default Account Teams を有効化し、ユーザーが既定チームを設定する運用。Account Team Member で設定できるアクセスレベルの種類はどれか。（3つ選択）",
+        "choices_ja": {
+          "A": "Opportunity Access",
+          "B": "Contract Access",
+          "C": "Contact Access",
+          "D": "Case Access",
+          "E": "Account Access"
+        },
+        "correct_answers": [
+          "A",
+          "D",
+          "E"
+        ],
+        "explanation_ja": "Account Team では、Account/Opportunity/Case のアクセスレベルを個別に設定できる（Contact/Contract ではない）。"
+      },
+      {
+        "question_no": 33,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は「レコードアクセス」「共有計算」の性能改善を目指している。確認すべき領域はどれか。（3つ選択）",
+        "choices_ja": {
+          "A": "Opportunity のデータ（1 Account あたり 10,000 超の Opportunity がないか）",
+          "B": "カスタムオブジェクトのデータ（1 Account あたり 10,000 超の子レコードがないか）",
+          "C": "レコード所有者の偏り（1 ユーザーが 10,000 超のレコードを所有していないか）",
+          "D": "Case のデータ（1 Account あたり 10,000 超の Case がないか）",
+          "E": "Apex Managed Sharing トリガ（10,000 超のレコードをクエリしていないか）"
+        },
+        "correct_answers": [
+          "A",
+          "C",
+          "D"
+        ],
+        "explanation_ja": "共有計算/レコードアクセスはデータスキューの影響が大きい。典型は Account に大量の子（Opportunity/Case）がぶら下がるケースや、所有者スキュー（特定ユーザーが大量所有）。"
+      },
+      {
+        "question_no": 34,
+        "status": "未回答",
+        "question_ja": "営業担当は、法務/技術/財務など支援部門に顧客レコードのアクセスを付与するために手作業が多い。取引に関わる営業担当は概ね固定。生産性向上のための推奨はどれか。",
+        "choices_ja": {
+          "A": "既定の Account Team（Default Account Team）を活用する",
+          "B": "支援ユーザーに View All Data を付与する権限セットを作る",
+          "C": "条件ベース共有ルールで他ユーザーへ共有する",
+          "D": "パブリックグループを作って Account 所有者をグループに置き換える"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "支援メンバーが固定なら、Default Account Team で自動付与するのが運用負荷が低く、最小権限にも寄せやすい。"
+      },
+      {
+        "question_no": 35,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty は「フィルタ条件に基づく Opportunity のテリトリー割り当て（Filter-Based Opportunity Territory Assignment）」を実装したい。必要な対応はどれか。",
+        "choices_ja": {
+          "A": "フィルタ条件を持つテリトリー割り当てルールを定義する",
+          "B": "フィルタ条件を持つ Account 割り当てルールを定義する",
+          "C": "フィルタ条件に基づく Opportunity テリトリー割り当て用の Apex クラスを定義する",
+          "D": "フィルタ条件を持つ Opportunity 割り当てルールを定義する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "Enterprise Territory Management の Filter-Based Opportunity Territory Assignment では、Apex による割り当てロジックを実装して関連付ける方式が求められる。"
+      },
+      {
+        "question_no": 36,
+        "status": "未回答",
+        "question_ja": "UC の営業担当はアカウントマネージャの既定 Opportunity Team のメンバー。アカウントマネージャが Opportunity を作成し、営業担当は Opportunity Team に追加された。しかしその後、支援していた Opportunity にアクセスできなくなった。原因はどれか。",
+        "choices_ja": {
+          "A": "Opportunity 所有者が「既定 Opportunity Team のアクセス可否」を無効化した",
+          "B": "Account Team が変更され、Opportunity Team が Account Team に置き換わった",
+          "C": "営業担当が Opportunity Team から手動で削除された",
+          "D": "同一 Account の別 Opportunity で Opportunity Team から削除された"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "Opportunity Team はレコード単位のメンバーシップで、所有者が手動で削除可能。別 Opportunity の操作が影響するわけではない。"
+      },
+      {
+        "question_no": 37,
+        "status": "未回答",
+        "question_ja": "VIP 顧客の Case を、サポート担当（所有者）と特定のマーケティングコンサル（編集可）だけが見られるようにしたい。推奨はどれか。",
+        "choices_ja": {
+          "A": "Case OWD=Private、ロール階層、所有者ベース共有ルール（Read Only）",
+          "B": "Case OWD=Private、Account Team（Read/Edit）",
+          "C": "Case OWD=Public Read Only、Case Team（Read）",
+          "D": "Case OWD=Private、Case Team（Read/Edit）"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Case Team を使うと、特定ケースに対して必要なメンバーに Read/Edit を付与でき、OWD=Private でも所有者＋チームのみ可視にできる。"
+      },
+      {
+        "question_no": 38,
+        "status": "未回答",
+        "question_ja": "UC は Customer Community Plus でディストリビューター向けに運用。パートタイムのエージェントが複数ディストリビューターで働くため、複数のディストリビューター Account にアクセスが必要。どう設定するか。",
+        "choices_ja": {
+          "A": "Apex 共有で Account_Share により共有する",
+          "B": "共有ルールでディストリビューター Account を共有する",
+          "C": "共有セットで、Account-Contact 関係に基づきディストリビューター Account を共有する",
+          "D": "Share Group で、Account-Contact 関係に基づき共有する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "外部ユーザーに複数 Account を見せたい要件は、共有セット（アカウント/コンタクトとの関連に基づく）での付与が適切。"
+      },
+      {
+        "question_no": 39,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar の環境：\n- Commercial/Consumer のサポート部門は同じ Support Director 配下。\n- Commercial/Consumer の営業は同じ VP of Sales 配下だが、営業同士は相互にコラボしない。\n- ただし Commercial と Consumer の営業部門は顧客（Account）を相互に共有したい。\n- 一方で Commercial/Consumer のサポート部門同士はコラボしない。\n- Account 所有者は営業部門のまま。\nAccount の OWD と、適切なサポート向け共有はどう設計するか。",
+        "choices_ja": {
+          "A": "Account OWD=Private。Commercial Sales ロール→Consumer Support ロール等、クロス共有の共有ルールを作る",
+          "B": "Account OWD=Private。Commercial Sales ロール→Commercial Support ロール、Consumer Sales ロール→Consumer Support ロールの共有ルールを作る",
+          "C": "Account OWD=Private。Commercial Sales グループ→Commercial Support グループ、Consumer Sales グループ→Consumer Support グループの共有ルールを作る",
+          "D": "Account OWD=Read Only。Commercial Sales ロール→Consumer Support グループ等、クロス共有の共有ルールを作る"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "営業同士は混ぜず、各営業部門が所有する顧客を自部門サポートにのみ共有する必要がある。グループ単位で共有ルールを設計すると柔軟に管理できる。"
+      },
+      {
+        "question_no": 40,
+        "status": "未回答",
+        "question_ja": "コントローラが静的クエリ/バインド変数ではなく、動的クエリを使う場合に発生し得る脆弱性はどれか。",
+        "choices_ja": {
+          "A": "バッファオーバーフロー",
+          "B": "レコードアクセスの上書き",
+          "C": "SOQL インジェクション",
+          "D": "クロスサイトスクリプティング（XSS）"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "動的 SOQL にユーザー入力を連結すると SOQL Injection のリスクがある。静的クエリ＋バインド変数、または適切なエスケープが必要。"
+      },
+      {
+        "question_no": 41,
+        "status": "未回答",
+        "question_ja": "顧客対応の不適切なやり取りは Case として起票され、人事担当に割り当てられる。苦情対象の担当者（被申立人）はその Case を見られないが、その担当者のマネージャは見られる必要がある。どう実現するか。",
+        "choices_ja": {
+          "A": "Case のトリガで、被申立人（カスタム項目）のマネージャに Apex Managed Sharing で共有する",
+          "B": "被申立人が空でない場合に、Role「Manager 以上」へ共有する条件ベース共有ルールを Case に作る",
+          "C": "Case の所有者を被申立人にし、CRUD を外して本人が読めないようにする"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "要件は「被申立人のマネージャ（ロール階層）へ共有」。条件ベース共有ルールで「Manager ロール以上」に共有すれば、本人には共有されず（ロール階層上位のみ）要件に合致しやすい。"
+      },
+      {
+        "question_no": 42,
+        "status": "未回答",
+        "question_ja": "UC は支店長と支店スタッフが、自分の地理的エリアの顧客と関連情報だけを見られるようにしたい。どの組み合わせが適切か。",
+        "choices_ja": {
+          "A": "Account の OWD を適切に設定し、共有ルールを作成する",
+          "B": "Account Team を作り支店長を追加し、Account の OWD を設定する",
+          "C": "ロール階層を設定し、共有ルールを作成する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "地理エリアでの分離は、まず OWD を Private などで閉じ、条件ベース共有ルールでエリアごとに開くのが基本。ロール階層だけでは地理条件の切り分けを表現しにくい。"
+      },
+      {
+        "question_no": 43,
+        "status": "未回答",
+        "question_ja": "UC は Customer Community を導入。顧客（外部ユーザー）が所有するあらゆるレコードを、UC のカスタマーサポートロール（内部）から参照できる必要がある。どう設定するか。",
+        "choices_ja": {
+          "A": "共有セット",
+          "B": "共有グループ（Share Group）",
+          "C": "Apex 共有",
+          "D": "共有ルール"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "内部ユーザーに対して「外部ユーザー所有レコード」を広く共有する要件は、所有者ベース/条件ベース共有ルールで実現するのが標準的。"
+      },
+      {
+        "question_no": 44,
+        "status": "未回答",
+        "question_ja": "ユーザーによるレポートのエクスポートを制限したい。何を削除すべきか。",
+        "choices_ja": {
+          "A": "「Report Manager」ユーザー権限",
+          "B": "レポートフォルダの「Allow Export」設定",
+          "C": "ページレイアウトから Export ボタンを外す",
+          "D": "プロファイル権限「Export Reports」"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "エクスポート可否はプロファイルの「Export Reports」権限で制御する。UI からボタンを外しても API 等の抜け道になり得る。"
+      },
+      {
+        "question_no": 45,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は Account Teams を拡張するため、カスタム Account Team オブジェクトを実装し、Apex/Visualforce を使いつつ既存 Account Team の機能を維持したい。設計上正しい考慮点はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Custom Account Team のデータに基づき AccountShare を保守（同期）する必要がある",
+          "B": "Custom Account Team のデータで条件ベース共有ルールを動的に生成する必要がある",
+          "C": "AccountShare はプログラムで保守できないため、Visualforce で画面をカスタムする必要がある",
+          "D": "Custom Account Team のデータと AccountTeamMember を同期する必要がある"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "Account の共有（AccountShare）とチーム（AccountTeamMember）は別オブジェクト。既存機能相当を維持するなら両者の整合を保つ必要がある。共有ルールを動的生成する設計は現実的でない。"
+      },
+      {
+        "question_no": 46,
+        "status": "未回答",
+        "question_ja": "Customer Community を設定してコラボレーションを有効化したが、顧客は同一 Account の他顧客の Chatter 投稿しか見られない。全顧客の投稿を見られるようにするにはどうするか。",
+        "choices_ja": {
+          "A": "Chatter Super User を有効化する",
+          "B": "Community User Visibility を有効化する",
+          "C": "Chatter 投稿に View All を付与する",
+          "D": "Internal Users Visibility を有効化する"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Community User Visibility を有効化すると、外部ユーザー同士の検索/参照範囲が広がり、他アカウントの外部ユーザーの Chatter なども見えるようにできる。"
+      },
+      {
+        "question_no": 47,
+        "status": "未回答",
+        "question_ja": "UC は 3 か国のコールセンターで 24×7 サポートを提供している。各コールセンターの担当者はローカルの勤務時間中のみ同等の情報へアクセスできる必要がある。ログイン可能時間を制御する Salesforce 機能はどれか。",
+        "choices_ja": {
+          "A": "権限セット",
+          "B": "カスタム権限",
+          "C": "ユーザーレコードでログイン時間を設定する",
+          "D": "プロファイル"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "ログイン時間（Login Hours）はプロファイルで制御する。権限セットでは拡張できない。"
+      },
+      {
+        "question_no": 48,
+        "status": "未回答",
+        "question_ja": "レポート/ダッシュボードのフォルダを組織内の他ユーザーと共有したい。可能な方法はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "ロール",
+          "B": "プロファイル",
+          "C": "パブリックグループ",
+          "D": "チーム"
+        },
+        "correct_answers": [
+          "A",
+          "C"
+        ],
+        "explanation_ja": "フォルダ共有はロール/サブロール、またはパブリックグループへ付与できる。プロファイル/チームは共有先として使えない。"
+      },
+      {
+        "question_no": 49,
+        "status": "未回答",
+        "question_ja": "要件：\n- ユーザーは自分または部下が所有する Account のみ参照。\n- Account の「Key Customer」が True のものは全 Senior Account Manager に可視。\n- Account のある項目は機密で、10 名だけが参照/編集可能。10 名は複数グループに跨り、入れ替わりもある。\n最小工数で必要な 3 つのセキュリティ機能はどれか。（3つ選択）",
+        "choices_ja": {
+          "A": "Apex Managed Sharing",
+          "B": "権限セット",
+          "C": "条件ベース共有ルール",
+          "D": "所有者ベース共有ルール",
+          "E": "ロール階層"
+        },
+        "correct_answers": [
+          "B",
+          "C",
+          "E"
+        ],
+        "explanation_ja": "部下の可視性はロール階層で実現。Key Customer の横断可視化は条件ベース共有ルール。機密項目の限定アクセスは、入れ替えがあるため権限セットで付与するのが運用容易。"
+      },
+      {
+        "question_no": 50,
+        "status": "未回答",
+        "question_ja": "Case に法務の関与が必要な場合、Case 所有者が「Legal SME」（ユーザー参照）に弁護士を設定する。Case は Private。支援が必要な時だけ、その弁護士に当該 Case へのアクセスを付与するにはどうするか。",
+        "choices_ja": {
+          "A": "Case トリガで Legal SME のユーザーへ Apex Managed Sharing で共有する",
+          "B": "「法務支援が必要」チェック時に法務ロールへ共有する条件ベース共有ルールを作る",
+          "C": "「法務支援が必要」チェック時に法務パブリックグループへ共有する条件ベース共有ルールを作る"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "レコード上の特定ユーザー（Legal SME）へ個別共有するには Apex Managed Sharing が最適。共有ルールだと対象ユーザーが固定（ロール/グループ）になってしまう。"
+      },
+      {
+        "question_no": 51,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は Job（カスタム, OWD=Private）に対する Apex Managed Sharing を実装中。共有レコード挿入時に DML 例外となる AccessLevel 設定はどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "AccessLevel='None'",
+          "B": "AccessLevel='All'",
+          "C": "AccessLevel='Read'",
+          "D": "AccessLevel='Edit'"
+        },
+        "correct_answers": [
+          "A",
+          "B"
+        ],
+        "explanation_ja": "共有オブジェクトの AccessLevel は通常 'Read' または 'Edit' のみを許容し、'All'/'None' はサポートされず例外となる。"
+      },
+      {
+        "question_no": 52,
+        "status": "未回答",
+        "question_ja": "Opportunity 共有が Private で Opportunity Teams 有効時、Opportunity 所有者を変更できるユーザー設定はどれか。（3つ選択）",
+        "choices_ja": {
+          "A": "「Transfer Records」権限を持つユーザー、またはシステム管理者",
+          "B": "現在の Opportunity 所有者",
+          "C": "所有者ユーザーの「Manager」項目に設定されているユーザー",
+          "D": "当該 Opportunity の Team Member",
+          "E": "ロール階層で Opportunity 所有者の上位にいるユーザー"
+        },
+        "correct_answers": [
+          "A",
+          "B",
+          "E"
+        ],
+        "explanation_ja": "移管は Transfer Records 権限または管理者が可能。所有者本人も移管できる（権限/設定に依存）。ロール階層上位者は通常移管可能。Manager 項目やチームメンバーには自動で移管権限は付与されない。"
+      },
+      {
+        "question_no": 53,
+        "status": "未回答",
+        "question_ja": "営業マネージャは自チームの Account に加え、他国の同一セグメントの Account を READ で参照したい。国別でロール階層を構成しているが、米国マネージャがカナダの同一セグメントを見られない。適切な対応はどれか。",
+        "choices_ja": {
+          "A": "同一セグメントの Account を全営業マネージャロールに共有する所有者ベース共有ルールを作る",
+          "B": "同一セグメントの Account をパブリックグループに入れて権限セットで付与する",
+          "C": "同一セグメントの Account を全営業マネージャロールに共有する条件ベース共有ルールを作る",
+          "D": "米国/カナダの営業マネージャを同一ロールにするようロール階層を変更する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "国を跨いだ「セグメント」という項目条件での共有は、条件ベース共有ルールが最適。ロール再編は影響が大きい。"
+      },
+      {
+        "question_no": 54,
+        "status": "未回答",
+        "question_ja": "財務チームは通常 Account/Contact を参照しない。ある財務アナリストが大口案件のため一時的に Opportunity へのアクセスを付与されたところ、Account と Contact も参照できるようになった。原因として考えられるものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Contact は Account からの暗黙共有で参照できる",
+          "B": "Account はロール階層で参照できる",
+          "C": "Opportunity から Account への暗黙共有で参照できる",
+          "D": "Opportunity から Contact への暗黙共有で参照できる"
+        },
+        "correct_answers": [
+          "A",
+          "C"
+        ],
+        "explanation_ja": "子（Opportunity/Case/Contact 等）にアクセスすると、親（Account）へ読み取りの暗黙共有が付与される。さらに Account を参照できると、Controlled by Parent の Contact も参照できる可能性がある。"
+      },
+      {
+        "question_no": 55,
+        "status": "未回答",
+        "question_ja": "Account OWD=Private。営業ユーザーは Opportunity を Create/Edit できる。関連する Account にはどのレベルでアクセスできるか。",
+        "choices_ja": {
+          "A": "Read/Create/Edit",
+          "B": "アクセスなし",
+          "C": "Read/Create",
+          "D": "読み取り専用"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Opportunity にアクセスできても、親 Account には暗黙共有として読み取り専用アクセスが付与されるのが一般的（編集は付与されない）。"
+      },
+      {
+        "question_no": 56,
+        "status": "未回答",
+        "question_ja": "Custom Sales Department プロファイルのユーザーに Opportunity を削除させたくない。どうするか。",
+        "choices_ja": {
+          "A": "オブジェクト権限でプロファイルから「Opportunity Delete」を外す",
+          "B": "Validation Rule で Profile を判定して IsDeleted を True にできないようにする",
+          "C": "標準削除ボタンを Visualforce で上書きして警告する",
+          "D": "ページレイアウト/レコードタイプ設定から Delete ボタンを外す"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "削除禁止はオブジェクト権限（Delete）を外すのが最も確実。"
+      },
+      {
+        "question_no": 57,
+        "status": "未回答",
+        "question_ja": "特定の Account 管理ユーザーは、Account が Customer になるまでその Account を見せたくない。Account の Type が Customer/Partner/Prospect/Other を表す。実現方法として適切なものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Type=Customer のとき Account を Account Management グループに共有する条件ベース共有ルールを作る",
+          "B": "Sales 所有の Account を Account Management ロールと配下へ共有する Account 共有ルールを作る",
+          "C": "Type=Customer の Account を含む公開リストビューを作り、Account Management パブリックグループへ共有する",
+          "D": "Customer になったら Account Team に Account Manager を追加する業務プロセスを設ける"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "Customer 条件での可視化は条件ベース共有ルールが適切。また運用で Account Team 追加による暗黙共有（チームアクセス）でも実現できる。リストビュー共有はレコードアクセス自体を付与しない。"
+      },
+      {
+        "question_no": 58,
+        "status": "未回答",
+        "question_ja": "UC は Person Account（小売）と Business Account（法人）を使い分ける。Retail Sales は法人（商用）にアクセスせず、全ての小売（Person Account）にはアクセスしたい。Account OWD=Private のとき、どう満たすか。",
+        "choices_ja": {
+          "A": "PersonAccount レコードタイプの Account に Retail Sales ロールへアクセスを付与する条件ベース共有ルールを作る",
+          "B": "AccountContactRelation に所有者ベース共有ルールを作り、小売営業が所有する役割レコードを共有する",
+          "C": "Retail Sales プロファイルに Person Account レコードタイプへのアクセスを付与する",
+          "D": "Retail Sales プロファイルに Account の View All を付与する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "レコードタイプ（Person Account）で対象を絞って共有したいので、条件ベース共有ルールが適切。View All は法人も見えてしまう。レコードタイプ権限だけではレコード共有は付与されない。"
+      },
+      {
+        "question_no": 59,
+        "status": "未回答",
+        "question_ja": "UC は年度末の繁忙期に営業マネージャ同士が協力して案件をクローズする。必要に応じて他チームの営業マネージャへ Opportunity を共有したい。また共有は新年度開始から 2 週間後に自動で期限切れにしたい。提案として適切なものはどれか。（2つ選択）",
+        "choices_ja": {
+          "A": "Apex Sharing で Opportunity を営業マネージャへ共有する",
+          "B": "Scheduled Apex でアクセス（共有）を削除する",
+          "C": "Opportunity Team で営業マネージャを追加して共有する",
+          "D": "共有ルールで営業マネージャへ共有する"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "必要時にユーザーを追加できるのは Opportunity Team。期限付き要件は標準共有では満たしにくいので、Scheduled Apex で共有（チーム/Share レコード等）を定期的に解除する。"
+      },
+      {
+        "question_no": 60,
+        "status": "未回答",
+        "question_ja": "Job と Job Interview（ともに Private）。Job Interview は Job への Lookup。HR が全レコードを所有。Interviewer（ユーザー参照）が設定されたら、その Interviewer に Job Interview を自動共有したい（Interviewer は部門を問わない）。適切な方法はどれか。",
+        "choices_ja": {
+          "A": "Apex Managed Sharing で Interviewer に Job Interview を共有する",
+          "B": "Job Interview と Interviewer 間で条件ベース共有ルールを作る",
+          "C": "Job Interview と Interviewer 間で標準共有ルールを作る",
+          "D": "ワークフローで Interviewer にメール通知する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "Lookup に入った任意ユーザーへ個別に共有する要件は、Apex Managed Sharing（_Share へのレコード作成/更新）が最適。"
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-02-04",
+    "title": "Salesforce Exam Questions (追加60問)",
+    "questions": [
+      {
+        "question_no": 1,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting の環境は次のとおり。\n- グローバル 24×7 の Salesforce 利用（マーケティング、受注管理、営業など）\n- ネストしたテリトリ階層、営業ユーザ 12,000 名、サポートエージェント 22,000 名\n- 日次でテリトリ変更\n- 新規アプリ／変更要求が多い\n- アジャイルで 2 週間ごとにリリース\n\nアーキテクトは、Salesforce サーバのメンテナンス再起動からのシステム復旧（リカバリ）を支援したい。\nこの目的に最も適した Salesforce 機能はどれか。",
+        "choices_ja": {
+          "A": "共有ルール再計算の遅延（Deferred Sharing Rule Recalculation）を有効化する",
+          "B": "Granular Locking（粒度の細かいロック）を有効化する",
+          "C": "フィルタベースの商談テリトリ割り当て（Filter-Based Opportunity Territory Assignment）を有効化する",
+          "D": "共有ルール再計算の並列化（Parallel Sharing Rule Recalculation）を有効化する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "**Parallel Sharing Rule Recalculation（共有ルール再計算の並列化）**は、共有ルール再計算の処理時間を短縮し、複数スレッドで非同期に処理を分割できます。サーバ再起動が発生してもジョブがキューに戻され、復旧後に処理が継続されるため、メンテナンス再起動時の回復性（レジリエンス）にも有効です。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.security_sharing_recalculating_parallel.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 2,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は全社員の NPS（ネット・プロモーター・スコア）を記録するカスタムオブジェクトを持つ。レコード所有者の上位ロールにマネージャがいるが、共有ルールはない。\n所有者のマネージャが NPS レコードへアクセスできないようにするにはどうするべきか。",
+        "choices_ja": {
+          "A": "組織の共有設定（OWD）を「非公開（Private）」にし、NPS オブジェクトの「階層を使用したアクセス（Grant Access Using Hierarchies）」をオフにする",
+          "B": "Apex 共有で、マネージャ用プロファイルの NPS 共有レコードを削除する",
+          "C": "マネージャ用プロファイル／権限セットから NPS の CRUD を削除する",
+          "D": "条件ベース共有ルールで、マネージャロール以上を除外する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "OWD を **Private** にしたうえで **Grant Access Using Hierarchies を無効化**すると、ロール階層による上位者（マネージャ）の自動アクセスを防げます。共有ルールがない前提では、所有者と明示的に共有されたユーザ以外は参照できません。",
+        "sources": []
+      },
+      {
+        "question_no": 3,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は ERP と新規連携し、ERP の出荷テーブルにある取引先責任者（Contact）を CRM と同期して営業が最新情報を参照できるようにしたい。\n環境は次のとおり。\n- 連携はロール階層の最上位にいる専用「連携ユーザ」で実行\n- 取引先（Account）の OWD は Private、取引先責任者（Contact）は 親に連動（Controlled by Parent）\n- ERP 側に取引先情報を持つ取引先責任者が 100,000 件あるが、Salesforce に対応する取引先がない\n営業チームが取引先責任者を参照でき、かつ性能問題を起こさない設計として、アーキテクトは何をすべきか。",
+        "choices_ja": {
+          "A": "1) 連携で取引先責任者と対応する取引先の両方を作成する。\n2) 取引先の共有ルールで営業にアクセスを付与し、結果として取引先責任者にもアクセスさせる。",
+          "B": "1) 連携で取引先責任者を 1 つの専用取引先配下にまとめて作成する。\n2) 取引先の共有ルールで営業にアクセスを付与する。",
+          "C": "1) 連携で取引先なし（Account 未設定）の取引先責任者を作成する。\n2) 取引先責任者の共有ルールで営業にアクセスを付与する。",
+          "D": "1) 連携で取引先責任者と対応する取引先の両方を作成する。\n2) 取引先責任者の共有ルールで営業にアクセスを付与する。"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "Contact が **Controlled by Parent** のため、営業が Contact を参照するには親の Account へのアクセスが必要です。したがって、連携で **Account と Contact の両方を作成**し、Account の **共有ルール**で営業にアクセスを付与するのが自然で、データ構造も健全です（1 件の「専用 Account」に集約するとデータスキュー等の性能リスクが高まります）。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=000384994&type=1"
+        ]
+      },
+      {
+        "question_no": 4,
+        "status": "未回答",
+        "question_ja": "Universal Containers は Apex コードで利用する暗号化キーを Salesforce 内に保存したいが、ユーザにこの機密キーを見せたくない。ただしユーザには「設定の参照（View Setup）」権限が必要である。\n機密キーを安全に保管するにはどうするべきか。",
+        "choices_ja": {
+          "A": "保護されたカスタムメタデータ型（Protected Custom Metadata Type）にキーを保存し、そのレコードをマネージドパッケージに同梱して本番組織へインストールする",
+          "B": "カスタムメタデータ型にキーを保存し、管理者プロファイルだけが参照できるように設定する",
+          "C": "保護されたカスタムメタデータ型にキーを保存し、そのレコードをアンロックドパッケージに同梱して本番組織へインストールする"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "**Protected Custom Metadata** はパッケージ化したうえで保護され、参照可能範囲を制御できます。要件（View Setup が必要なユーザがいてもキーは見せない）を満たすには、**マネージドパッケージ**として配布／インストールする方法が最も安全です。",
+        "sources": []
+      },
+      {
+        "question_no": 5,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) の営業マネージャが、チームの Shipment（カスタムオブジェクト）レコードを参照できないと不満を言っている。Shipment の OWD は Private。調査の結果、これらユーザのロール階層設定は正しいことが分かった。\nそれでも参照できない理由として考えられるものはどれか。",
+        "choices_ja": {
+          "A": "営業マネージャは Shipment オブジェクトに Read 権限しかなく、チームレコードを編集できないのは当然である",
+          "B": "Shipment の所有者ベース共有ルールが管理者により誤って無効化された",
+          "C": "ロール階層による暗黙共有が管理者により誤って無効化された",
+          "D": "Shipment 共有設定の「階層を使用したアクセス（Grant Access Using Hierarchies）」が誤って無効化された"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "OWD が Private の場合、通常は **ロール階層**により上位者が部下のレコードへアクセスできますが、カスタムオブジェクトでは **Grant Access Using Hierarchies** をオフにでき、オフにすると上位ロールでも自動アクセスできません。ロール階層が正しいのに見えないなら、この設定が無効化されている可能性が高いです。",
+        "sources": []
+      },
+      {
+        "question_no": 6,
+        "status": "未回答",
+        "question_ja": "若手アカウントマネージャが取引先のオーナーで、複雑な案件のために商談（Opportunity）を作成した。製品スペシャリストとソリューションエンジニアの支援が必要だが、近々その取引先は上位者へ再割り当てされる可能性が高い。\n非公開（Private）共有モデルで、商談を共有する最適な方法はどれか。",
+        "choices_ja": {
+          "A": "取引先（Account）を手動共有する",
+          "B": "商談チーム（Opportunity Team）を使う",
+          "C": "所有者ベース共有ルールを作成する",
+          "D": "商談（Opportunity）を手動共有する"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "案件単位で必要メンバーを付け替えられ、将来的なオーナー変更にも運用しやすいのは **Opportunity Team** です。手動共有は所有者変更で失効する場合があり、所有者ベース共有ルールは要件に対して粗すぎます。",
+        "sources": []
+      },
+      {
+        "question_no": 7,
+        "status": "未回答",
+        "question_ja": "Universal Containers には監査担当者（Auditors）が組織横断で存在し、高額な商談（High-value Opportunity）にアクセスする必要がある。共有モデルは Private。\n要件を満たす設計としてアーキテクトが推奨すべき 2 つはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "監査担当者用の公開グループ（Public Group）を作成し、監査担当者を追加する",
+          "B": "監査担当者をデフォルトの商談チームに追加する",
+          "C": "監査担当者をロール階層の最上位に置く",
+          "D": "条件ベース共有ルールで、高額商談を公開グループへ共有する"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "組織横断の集合には **Public Group** が適しており、さらに **条件ベース共有ルール**で「高額商談」という条件に合うレコードだけをそのグループに共有するのがスケーラブルです。",
+        "sources": []
+      },
+      {
+        "question_no": 8,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は Partner Community ライセンスを使う 200 の代理店を持つ。パートナー同士は互いのデータを見られないが、ある代理店内の特定の個人にはより広い可視性を与えたい。\nスケーラブルに、同一代理店内の partner manager ロールのユーザが、同一代理店内の他の partner manager と partner user が所有する Case と Container レコード（ただし partner executive は除く）へアクセスできるようにするには、どれを推奨すべきか。",
+        "choices_ja": {
+          "A": "共有セット（Sharing Set）を作成する",
+          "B": "Case と Container に View All 権限を付与する権限セットを作成する",
+          "C": "代理店ごとに所有者ベース共有ルールを作成する",
+          "D": "partner manager ユーザに Super User 権限を付与する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Partner Community では、特定ユーザに **Super User Access** を付与すると、同一パートナーアカウント内でロール階層上「同レベル以下」の外部ユーザが所有するレコードへアクセスできます。要件の「同一代理店内での可視性拡張」に最も合います。",
+        "sources": []
+      },
+      {
+        "question_no": 9,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks の環境は次のとおり。\n- Open Position と Candidate の 2 つのカスタムオブジェクト\n- Candidate は Open Position への参照（Lookup）を持つ\n- 両方とも共有設定は Private\n- 人事（HR）チームがすべてのレコードを所有\nInterviewer（ユーザ参照項目）が入力されたら、その Interviewer に Candidate を自動共有したい。Interviewer はどの部門でもあり得る。\nこの目的を達成するためのアプローチはどれか。",
+        "choices_ja": {
+          "A": "Apex 管理共有（Apex Managed Sharing）のコードを作り、Candidate を Interviewer ユーザへ共有する",
+          "B": "ワークフローで Interviewer に通知メールを送る",
+          "C": "Interviewer を条件にした条件ベース共有ルールを作る",
+          "D": "Interviewer を対象にした標準共有ルールを作る"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "参照先ユーザ（Interviewer）が可変で、レコードごとに共有先が変わるため、宣言的共有ルールでは難しいです。**Apex Managed Sharing** で _Share レコードを作成するのが適切です。",
+        "sources": []
+      },
+      {
+        "question_no": 10,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting の営業担当 VP は、ある 1 名の営業担当に他メンバーの売上数値を比較用に参照させたい。\n共有モデルが Private の場合、この目的でダッシュボードを作成するのに必要な 2 つの権限はどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "カスタムレポートタイプの管理（Manage Custom Report Types）",
+          "B": "アプリケーションのカスタマイズ（Customize Application）",
+          "C": "ダッシュボードの管理（Manage Dashboards）",
+          "D": "すべてのデータの参照（View All Data）"
+        },
+        "correct_answers": [
+          "C",
+          "D"
+        ],
+        "explanation_ja": "ダッシュボード作成には **Manage Dashboards** が必要です。また、Private モデルで他者の数値を参照するには、共有を開くか、強い参照権限が必要で、選択肢の中では **View All Data** が該当します。",
+        "sources": []
+      },
+      {
+        "question_no": 11,
+        "status": "未回答",
+        "question_ja": "委任管理者（Delegated Administration）の権限でできることはどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "プロファイルを作成する",
+          "B": "組織の共有設定（OWD）を設定する",
+          "C": "ユーザをプロファイルに割り当てる",
+          "D": "ロックされたユーザを解除（Unlock）する"
+        },
+        "correct_answers": [
+          "C",
+          "D"
+        ],
+        "explanation_ja": "委任管理者は、指定範囲内で **ユーザを既存プロファイルへ割り当て**たり、**ロック解除**などのユーザ管理ができます。一方でプロファイル作成や OWD 設定のような全体設定はできません。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.admin_delegate.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 12,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar のマネージャは、Account に「支払条件詳細（Payment Term Details）」を保持したい。\n要件：\n- Account オブジェクト上に保持\n- 特定のレコードタイプと特定のプロファイルでのみ項目を表示\n管理者は、どのレコードタイプ／プロファイル／ページレイアウトにその項目が含まれるかを素早く把握したい。\n何を使うべきか。",
+        "choices_ja": {
+          "A": "各プロファイルの項目レベルセキュリティ（FLS）を個別に確認する",
+          "B": "項目を項目定義レベルで必須にする",
+          "C": "各プロファイルでログインしてページレイアウトを確認する",
+          "D": "項目アクセシビリティビューア（Field Accessibility Viewer）を利用する"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "**Field Accessibility Viewer** を使うと、項目がどのページレイアウト／レコードタイプ／プロファイルで表示・編集可能かを一覧で確認できます。",
+        "sources": []
+      },
+      {
+        "question_no": 13,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は複数の業務パートナーと連携して出荷・履行を行っており、パートナー向けに Web サービスを公開したい。各パートナーは注文ステータスを問い合わせできるが、自社が履行ベンダーである注文だけにアクセスさせたい。標準 API は使わせず、カスタム API を開発したい。\nデータセキュリティを確保するため、アーキテクトが検討すべき 3 つの設計要素はどれか。（3 つ選択）",
+        "choices_ja": {
+          "A": "Apex Web サービスを「with sharing」で実装する",
+          "B": "各パートナーに API 有効（API Enabled）のプロファイルで個別の Salesforce ログインを付与する",
+          "C": "Apex Web サービスに fulfillment ID（履行ベンダーID）入力パラメータを持たせる",
+          "D": "fulfillment ID を使って動的 SOQL で Orders を検索する",
+          "E": "Orders の OWD を Private にする"
+        },
+        "correct_answers": [
+          "A",
+          "B",
+          "E"
+        ],
+        "explanation_ja": "レコードレベル制御は **OWD=Private** と **with sharing** による共有順守が基本です。また、パートナーごとに **専用ユーザ（API Enabled）** を用意して監査・失効・レート制御もしやすくします。動的 SOQL は注入リスクがあり、ここでは推奨されません。",
+        "sources": []
+      },
+      {
+        "question_no": 14,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は Salesforce へのログインアクセスを制限したい。\nこの目的に有効な 2 つの機能はどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "ロールベースの IP 制限",
+          "B": "プロファイルベースのログイン時間制限",
+          "C": "プロファイルベースの IP 制限",
+          "D": "組織全体のログイン時間制限"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "Salesforce では **プロファイル単位**でログイン時間と IP 制限を設定できます。ロール単位や組織全体のログイン時間制限という設定はありません。",
+        "sources": []
+      },
+      {
+        "question_no": 15,
+        "status": "未回答",
+        "question_ja": "Dreamforce の登壇者は、Salesforce 上の非公開カスタムオブジェクト Presentation の詳細（概要、登壇者プロフィールなど）を編集できる必要がある。各 Presentation の登壇者は Presenter（User と Presenter の中間オブジェクト）で管理している。\nどのように実現するべきか。",
+        "choices_ja": {
+          "A": "Presenter 中間オブジェクトのトリガで、そのユーザを Presentation の「営業チーム」に追加する",
+          "B": "登壇者向けに権限セットを付与して Presentation の編集権限を与える",
+          "C": "Presenter 中間オブジェクトのトリガで Apex Managed Sharing を使い、関連する Presentation レコードへのアクセスを追加／削除する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "レコード単位で登壇者の編集権限を付与・剥奪する必要があるため、**Apex Managed Sharing** で Presentation__Share を管理するのが適切です。標準の「営業チーム」は標準オブジェクト向けで、権限セットはユーザ単位でありレコード単位の可変共有を表現できません。",
+        "sources": []
+      },
+      {
+        "question_no": 16,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は Partner Community を導入し、カリフォルニアに NorthCal と SoCal の 2 つの代理店を開設した。各代理店には dealer manager がいて、その配下に service agent がいる。共有モデルは Private。\n要件：dealer manager は自代理店内の顧客ケースを参照できるが、他代理店のケースは参照できない。\n何を推奨すべきか。",
+        "choices_ja": {
+          "A": "この要件を実現するために共有・可視性モデルの追加変更は不要",
+          "B": "共有グループで dealer manager 配下の全エージェントへ全ケースを共有する",
+          "C": "新規ケース作成時に必要な手動共有を作るトリガを作成する",
+          "D": "ケースに応じて共有ルールを作るバッチを実装する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "Partner Community のロール階層（アカウント内ロール）により、dealer manager は同一代理店（同一パートナーアカウント）配下のエージェントが所有するケースへ可視性を持つ設計が一般的です。前提の Private モデルで代理店間分離ができているなら、追加の複雑な共有設計は不要です。",
+        "sources": []
+      },
+      {
+        "question_no": 17,
+        "status": "未回答",
+        "question_ja": "連携により Account に 50 個のカスタム項目が更新される。Cloud Kicks は、マネージャがレポート用にこれら項目を参照できればよいが、ページレイアウトを項目で埋め尽くしたくない。\n適切な推奨はどれか。",
+        "choices_ja": {
+          "A": "1) マネージャ用の Account ページレイアウトに項目を追加する\n2) セクションを折りたたみ（Collapsed）にする",
+          "B": "1) 項目レベルセキュリティ（FLS）でマネージャに参照権限を付与する\n2) ページレイアウトには追加しない",
+          "C": "1) カスタムレポートを作る\n2) マネージャロールにレポートフォルダ権限を付与する",
+          "D": "1) ロールベース共有ルールでマネージャに項目アクセスを付与する\n2) ページレイアウトでは非表示のままにする"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "レポートで使えるようにするなら **FLS で参照可能**にすればよく、UI に表示する必要がない場合は **ページレイアウトへ追加しない**のが最小変更です（共有ルールは項目アクセスを制御できません）。",
+        "sources": []
+      },
+      {
+        "question_no": 18,
+        "status": "未回答",
+        "question_ja": "ユーザが Files Home の「非公開ライブラリ」にアップロードした PDF を参照できるのは誰か。",
+        "choices_ja": {
+          "A": "アップロードしたユーザと View All Data 権限を持つユーザ",
+          "B": "アップロードしたユーザのみ",
+          "C": "アップロードしたユーザと、その上位ロールのユーザ"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Files Home の非公開ライブラリは **アップロードした本人のみ**が参照できます（明示的に共有しない限り、上位ロールや View All Data でも見られません）。",
+        "sources": []
+      },
+      {
+        "question_no": 19,
+        "status": "未回答",
+        "question_ja": "Person Account が有効な組織において、共有設定で「親に連動（Controlled by Parent）」を選択できるオブジェクトはどれか。3 つ選択。",
+        "choices_ja": {
+          "A": "Asset（資産）",
+          "B": "Case（ケース）",
+          "C": "Contact（取引先責任者）",
+          "D": "Opportunity（商談）",
+          "E": "Order（注文）"
+        },
+        "correct_answers": [
+          "B",
+          "C",
+          "D"
+        ],
+        "explanation_ja": "Person Account 有効時は、共有設定で **Contact / Opportunity / Case** を「Controlled by Parent」にできます。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.account_person_behavior.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 20,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は複数の注文（Order）について法的紛争中で、これらレコードがシステムから削除されていたことが判明した。今後同様のことが起きないようにしたい。\n要件を満たすアプローチはどれか。",
+        "choices_ja": {
+          "A": "プロファイル／権限セットから Order の削除権限（Delete）を外す",
+          "B": "Order ページレイアウトから削除ボタンを外す",
+          "C": "Order のレコードタイプ／ページレイアウトを読み取り専用にする",
+          "D": "共有ルールで Order のアクセスを参照（Read）にする"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "削除を防ぐには UI ではなく **権限（Delete）** を剥奪するのが確実です。ページレイアウト変更は API 等で回避され得ます。",
+        "sources": []
+      },
+      {
+        "question_no": 21,
+        "status": "未回答",
+        "question_ja": "Universal Containers の顧客が Enterprise Territory Management の 2 つのテリトリ（Portugal と Southern Europe）の条件を満たしている。\nこの取引先に対する商談（Opportunity）をテリトリに割り当てるために必要なことは何か。",
+        "choices_ja": {
+          "A": "Filter-Based Opportunity Territory Assignment を実装する Apex クラスを作成する",
+          "B": "商談に対して条件ベース共有ルールを作りテリトリに割り当てる",
+          "C": "Process Builder で商談の Territory 項目を更新する",
+          "D": "Territory Type Priority が最も高いテリトリが自動的に商談へ割り当てられる"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "複数テリトリの条件を満たす場合、**Territory Type Priority** により、優先度の高いテリトリが商談へ自動割り当てされます。",
+        "sources": []
+      },
+      {
+        "question_no": 22,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は Customer Community ライセンスで顧客にケース管理を提供している。Case の外部 OWD は Private。現在、コミュニティユーザは自分が作成したケースしか見られない。\n同一取引先（Account）に紐づくすべてのケースを見せるにはどうするべきか。",
+        "choices_ja": {
+          "A": "共有セット（Sharing Set）を作成する",
+          "B": "Customer Community Plus にライセンスをアップグレードする",
+          "C": "Apex で手動共有を作成する",
+          "D": "条件ベース共有ルールが全ユーザに適用されるようにする"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "Customer Community では、取引先／取引先責任者との紐づきに基づきアクセスを開くのに **Sharing Set** が有効です（追加ライセンスや Apex よりも標準機能で最小変更）。",
+        "sources": []
+      },
+      {
+        "question_no": 23,
+        "status": "未回答",
+        "question_ja": "キュー（Queue）を作成できるオブジェクトはどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "Case（ケース）",
+          "B": "Account（取引先）",
+          "C": "Opportunity（商談）",
+          "D": "Lead（リード）"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "キューは代表的に **Case と Lead** で利用されます（他にも一部標準／カスタムで利用可能）。",
+        "sources": []
+      },
+      {
+        "question_no": 24,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) の営業幹部は、大口でリスクのある商談を絞り込むリストビューを作成したい。これらのリストビューは、問題案件のクロージングに特化した一部の幹部だけが利用できるようにしたい。\nどう対応すべきか。",
+        "choices_ja": {
+          "A": "ロール階層上の適切なロールへリストビューを共有する",
+          "B": "適切な公開グループ（Public Group）へリストビューを共有する",
+          "C": "適切な個別ユーザへリストビューを共有する",
+          "D": "適切なキューへリストビューを共有する"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "特定メンバーだけに限定したい場合、ロール共有だと上位ロールに波及し得ます。対象を明確に固定できる **Public Group** に共有するのが適切です。",
+        "sources": []
+      },
+      {
+        "question_no": 25,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は 10 か国 100 以上の地域に拠点があり、可視性制御のため非常に複雑なロール階層を構築している。新年度にロール再編と取引先オーナーの再割当を計画している。\nこの作業で問題を避けるために推奨できる 3 つの機能はどれか。（3 つ選択）",
+        "choices_ja": {
+          "A": "共有再計算の遅延（Deferred Sharing Recalculation）",
+          "B": "スキニーテーブル（Skinny Table）",
+          "C": "共有再計算の並列化（Parallel Sharing Rule Recalculation）",
+          "D": "Granular Locking（粒度の細かいロック）",
+          "E": "Division によるデータ分割（Partition data using Divisions）"
+        },
+        "correct_answers": [
+          "A",
+          "C",
+          "D"
+        ],
+        "explanation_ja": "大量のロール変更／所有者変更では共有再計算・ロック競合がボトルネックになりやすいので、**Deferred Sharing Recalculation**、**Parallel Sharing Rule Recalculation**、**Granular Locking** が有効です。",
+        "sources": []
+      },
+      {
+        "question_no": 26,
+        "status": "未回答",
+        "question_ja": "Universal Containers は 75,000 の販売代理店を持ち、総ユーザは約 100 万人に達する。代理店はコミュニティで、配送のため自代理店に割り当てられたクロージング中の商談を参照する必要がある。\n代理店の要件を満たすライセンス推奨はどれか。",
+        "choices_ja": {
+          "A": "Customer Community",
+          "B": "Customer Community Plus",
+          "C": "Sales Cloud",
+          "D": "Partner Community"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "多数のパートナー（代理店）が商談プロセスに関与し、商談（Opportunity）を扱う要件には **Partner Community** が適しています。",
+        "sources": []
+      },
+      {
+        "question_no": 27,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting には、非公開共有モデルの Consultation（カスタムオブジェクト）がある。Product Research グループは専門領域ごとにロール階層へ分散しているが、Consultation は頻繁に共同作業するため、Product Research プロファイルの全員が全 Consultation を参照できる必要がある。\nまた、Consultation の所有者は必要に応じて Branding ユーザへ個別にアクセスを付与できる必要がある。\nこれを満たす 2 つのプラットフォーム機能はどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "手動共有（Manual Sharing）",
+          "B": "条件ベース共有ルール（Criteria-Based Sharing Rules）",
+          "C": "所有者ベース共有ルール（Owner-Based Sharing Rules）",
+          "D": "プロファイルの「View All」設定"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "Product Research は同一プロファイル内の全員に一律で全レコード参照が必要なので、オブジェクト権限の **View All** が最小手間です。Branding への個別付与は **手動共有**が適します。",
+        "sources": []
+      },
+      {
+        "question_no": 28,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty の Employee Review（カスタムオブジェクト）は OWD が Private。レビュー担当者が割り当てられると、Employee Review のユーザ参照項目が入力される。このユーザは所有者ではないが、レコードに編集（Edit）アクセスが必要。\nどう実現するべきか。",
+        "choices_ja": {
+          "A": "ユーザ参照項目が入力されると自動的にアクセスが付与される",
+          "B": "条件ベース共有ルールでユーザ参照項目のユーザへ共有する",
+          "C": "Apex トリガで EmployeeReview__Share レコードを挿入し、アクセスレベルを Edit にする",
+          "D": "ワークフローでユーザ参照項目のユーザへ共有する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "レコードごとに参照先ユーザへ **編集権限**を付与する必要があるため、**Apex Managed Sharing（_Share レコード挿入）**が適切です。宣言的共有では編集付与や可変共有が難しく、ワークフローは共有レコードを作成できません。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=000389396&type=1"
+        ]
+      },
+      {
+        "question_no": 29,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は External Default Sharing を有効化し、あるカスタムオブジェクトについて外部ユーザの外部共有デフォルトを「公開/参照のみ（Public Read Only）」にしたい。\nこのとき、内部ユーザの内部共有デフォルトとして有効な設定はどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "親に連動（Controlled by Parent）",
+          "B": "公開/参照のみ（Public Read Only）",
+          "C": "非公開（Private）",
+          "D": "公開/参照・更新（Public Read/Write）"
+        },
+        "correct_answers": [
+          "B",
+          "D"
+        ],
+        "explanation_ja": "外部共有デフォルトが Public Read Only の場合、内部共有デフォルトはそれ以上に緩い（同等またはより公開的な）必要があるため、**Public Read Only / Public Read/Write** が選べます。",
+        "sources": []
+      },
+      {
+        "question_no": 30,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は毎日大量の親子レコードを一括取り込み／更新しており、ロックエラーを懸念している。\nどの 2 つの状況がロックエラーを引き起こし得るか。（2 つ選択）",
+        "choices_ja": {
+          "A": "親レコードとその子レコードが、別スレッドで同時に処理される",
+          "B": "同一の親を持つ子レコードが、別トランザクションで同時に更新される",
+          "C": "親子レコードが同一スレッドで同期的に処理される",
+          "D": "親子レコードが同一バッチ内で処理される"
+        },
+        "correct_answers": [
+          "A",
+          "B"
+        ],
+        "explanation_ja": "ロック競合は、**同じ親を共有する子の並列更新**や、**親と子を別スレッド／別トランザクションで同時更新**する時に起きやすいです。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=000387767&type=1"
+        ]
+      },
+      {
+        "question_no": 31,
+        "status": "未回答",
+        "question_ja": "Universal Containers にはカスタム Apex コントローラを使う Visualforce アプリがある。\nこの Visualforce アプリ内で、オブジェクトレベルセキュリティ（CRUD）を確実に強制するにはアーキテクトは何をすべきか。",
+        "choices_ja": {
+          "A": "Apex コントローラクラスを without sharing で定義する",
+          "B": "Apex コントローラクラスを with sharing で定義する",
+          "C": "Apex コントローラで Schema.DescribeSObjectResult.isAccessible() を使用する",
+          "D": "Visualforce ページを with sharing で定義する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "with/without sharing はレコード共有（行レベル）であり、CRUD は別です。オブジェクトへのアクセス可否は **Schema.DescribeSObjectResult.isAccessible()** 等で確認し、必要に応じて処理を制御します。",
+        "sources": [
+          "https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_sobject_describe.htm"
+        ]
+      },
+      {
+        "question_no": 32,
+        "status": "未回答",
+        "question_ja": "ある企業は「どこでも働ける」文化を推進しており、営業は多様なデバイス（フォームファクタ）を使用する。現在、商談の詳細表示は 1 つのページレイアウトで運用しているが、一部デバイスでは表示の整列が崩れ使いづらいと苦情が出ている。\n推奨される対応はどれか。",
+        "choices_ja": {
+          "A": "商談の表示アクションをカスタム LWC で上書きし、onLoad でフォームファクタ判定して適切なレイアウトを出し分ける",
+          "B": "Dynamic Forms を使い、フォームファクタごとに適用する項目セクションを定義する",
+          "C": "商談の表示アクションを Visualforce で上書きし、onLoad でフォームファクタ判定して適切なレイアウトを出し分ける"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "**Dynamic Forms** により、デバイスサイズに応じてセクションや項目の表示を柔軟に最適化できます。標準の Lightning ページ上での適応ができ、カスタム上書きより保守性が高いです。",
+        "sources": []
+      },
+      {
+        "question_no": 33,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty の要件：Visualforce コントローラは最上位で without sharing にする必要がある。一方で、ページ内の特定メソッドではレコード作成権限や特定項目へのアクセス権限をユーザ権限に従って強制したい。\nこれを満たすために使うべき 2 つのメソッドはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "UserInfo.getProfileId()",
+          "B": "Schema.DescribeSObjectResult",
+          "C": "Schema.DescribeFieldResult",
+          "D": "Schema.getGlobalDescribe()"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "CRUD は **Schema.DescribeSObjectResult**、FLS は **Schema.DescribeFieldResult** で判定できます（without sharing の場合でも、明示的にこれらで権限強制が可能）。",
+        "sources": [
+          "https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_sobject_describe.htm"
+        ]
+      },
+      {
+        "question_no": 34,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty は、前四半期に作成された未対応（Open）のリードを表示するリストビューを作成した。このリストビューは特定のユーザグループにだけ見せたい。\nリストビュー共有の方法として利用できる 2 つはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "ロールと下位ロール（Roles and Subordinates）",
+          "B": "プロファイル（Profiles）",
+          "C": "手動共有（Manual Sharing）",
+          "D": "公開グループ（Public Groups）"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "リストビューは **Public Group** や **Roles and Subordinates** に共有できます。プロファイル共有や手動共有（レコード単位）は該当しません。",
+        "sources": []
+      },
+      {
+        "question_no": 35,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は重複リードの入力を減らしたい。また、リードは所有者だけが編集／再割当できるようにしたい。\nこの要件に適した Lead の組織の共有設定（OWD）はどれか。",
+        "choices_ja": {
+          "A": "公開/参照のみ/転送（Public Read Only/Transfer）",
+          "B": "非公開（Private）",
+          "C": "公開/参照・更新（Public Read/Write）",
+          "D": "公開/参照のみ（Public Read Only）"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "OWD を **Private** にすると、基本的に所有者と明示共有先以外は参照・編集できず、所有者が編集／再割当を担うモデルにしやすく、他者が既存リードを見て重複入力するリスクも抑えられます。",
+        "sources": []
+      },
+      {
+        "question_no": 36,
+        "status": "未回答",
+        "question_ja": "ある多国籍 Telco は Enterprise Territory Management を導入している。年度末の最終四半期にテリトリ構造を大幅変更し、新年度向けに新しいテリトリモデルを用意したい。\n現行モデルは 6,000 テリトリ、新モデルは 6,500 テリトリ。組織上限は 10,000 テリトリ。\n上限内に収めるために利用できる Enterprise Territory Management の機能はどれか。",
+        "choices_ja": {
+          "A": "Territory Model State（テリトリモデルの状態）",
+          "B": "Territory Type Priority（テリトリ種別優先度）",
+          "C": "Territory Hierarchy（テリトリ階層）",
+          "D": "Territory Type（テリトリ種別）"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "**Territory Model State** により、計画中モデル／アクティブモデルなどを切り替えながら管理でき、上限内で運用しやすくします（モデルの状態管理がキー）。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.tm2_territory_model_state.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 37,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は Group Maintenance Tables（グループメンテナンステーブル）を利用している。\nこれらのテーブルに保存されるアクセス付与はどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "暗黙的付与（Implicit grants）",
+          "B": "明示的付与（Explicit grants）",
+          "C": "グループメンバーシップ付与（Group Membership grants）",
+          "D": "継承付与（Inherited access grants）"
+        },
+        "correct_answers": [
+          "C",
+          "D"
+        ],
+        "explanation_ja": "GMT には **グループメンバーシップ**と、階層等からの **継承アクセス付与**が保存されます。",
+        "sources": [
+          "https://developer.salesforce.com/docs/atlas.en-us.salesforce_record_access_under_the_hood.meta/salesforce_record_access_under_the_hood/uth_groups.htm"
+        ]
+      },
+      {
+        "question_no": 38,
+        "status": "未回答",
+        "question_ja": "日本の営業マネージャが、オーストラリアの営業マネージャに商談クロージング支援を依頼したい。要件を満たすにはどうするべきか。",
+        "choices_ja": {
+          "A": "所有者ベース共有ルールを作成する",
+          "B": "共有セットで商談へのアクセスを付与する",
+          "C": "商談オブジェクトに View All を付与する",
+          "D": "商談チームで自動的に営業マネージャを追加する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "他地域の特定ロール（例：営業マネージャ）同士で、同種の所有者レコードを開くなら **所有者ベース共有ルール**が適します（特定所有者群のレコードを別のロール／グループへ開放）。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.security_sharing_rule_types.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 39,
+        "status": "未回答",
+        "question_ja": "Universal Containers は新しいアプリケーションを少数の営業担当にパイロット導入したい。パイロット対象の営業担当だけに新機能へアクセスさせ、従来機能は見せたくない。\n最適な対応はどれか。",
+        "choices_ja": {
+          "A": "営業担当プロファイルを複製して設定を調整し、パイロットユーザに新プロファイルを割り当てる",
+          "B": "営業担当プロファイルから従来機能へのアクセスを剥奪し、新機能用の権限セットを作成する",
+          "C": "パイロット用に新しいユーザレコードを作成する",
+          "D": "新機能用の権限セットを作成して付与し、従来機能を非表示にする"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "従来機能を「隠す」には UI／オブジェクト／タブ等の設定差分が出ることが多く、権限セットだけでは完全に表現できない場合があります。パイロットだけ挙動を変えるなら、**プロファイルを複製して別プロファイルを割当**するのが確実です。",
+        "sources": []
+      },
+      {
+        "question_no": 40,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty の組織情報：\n- Ryan と Kimberly は East の営業担当。上長は East の営業責任者 Katrina。\n- Sam と Wilder は West の営業担当。上長は West の営業責任者 Bob。\n- Wendy は CEO で、Katrina と Bob の上長。\n- ロール階層は管理構造に一致。\nRyan は NewCompany、Kimberly は OldCompany の取引先を所有。Katrina は自分の取引先 NewWorld を Kimberly に手動共有していた。\nその後 Katrina が異動し、NewWorld の新しい所有者は Lucy になった。\nNewWorld 取引先にアクセスできるのは誰か。",
+        "choices_ja": {
+          "A": "Wendy と Lucy",
+          "B": "Wendy、Ryan、Lucy、Kimberly",
+          "C": "Wendy、Katrina、Kimberly",
+          "D": "Wendy、Lucy、Kimberly"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "所有者変更（転送）が行われると、**手動共有（Manual share）は失効**するため、Kimberly はアクセスを失います。新所有者 Lucy はアクセスでき、CEO の Wendy はロール階層上でアクセスできます。よって **Wendy と Lucy**。",
+        "sources": []
+      },
+      {
+        "question_no": 41,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar は特許に関する高度に機密な製品情報をカスタムオブジェクト Product に保持している。要件：レコード所有者と Development プロファイルの全ユーザだけが Product を参照・編集できるようにしたい。\nこれを満たすために必要な 3 つの共有ツールはどれか。（3 つ選択）",
+        "choices_ja": {
+          "A": "Development プロファイルに Product オブジェクトの Modify All 権限を付与する",
+          "B": "Development プロファイルに View All Data 権限を付与する",
+          "C": "Product に対して Development プロファイル向け条件ベース共有ルールを作成する",
+          "D": "Product の OWD を Private にする",
+          "E": "Product の「Grant Access Using Hierarchies」を false にする"
+        },
+        "correct_answers": [
+          "A",
+          "D",
+          "E"
+        ],
+        "explanation_ja": "要件は「所有者＋特定プロファイルのみ」で、上位ロールからの参照も防ぎたいので **OWD=Private** と **Grant Access Using Hierarchies を無効化**が必要です。さらに Development 全員が参照・編集できるようにするには、オブジェクト権限で強く付与する（選択肢では **Modify All**）のが最小構成です。View All Data は広すぎ、共有ルールはプロファイル宛に作れません。",
+        "sources": []
+      },
+      {
+        "question_no": 42,
+        "status": "未回答",
+        "question_ja": "ServiceFeedback（カスタムオブジェクト）はパートナーからのフィードバックを収集する。外部ユーザ（パートナー）には OWD を Private にして、他パートナーのフィードバックは見せない。\n一方、社内ユーザ（内部社員）には ServiceFeedback を全件参照可能にしたい。\nどう対応すべきか。",
+        "choices_ja": {
+          "A": "社内ユーザをロール階層でパートナーより上位に配置する",
+          "B": "パートナー所有レコードを社内へ開く所有者ベース共有ルールを作る",
+          "C": "内部ユーザ向けの OWD（Internal Default）を Public Read Only にする",
+          "D": "トリガで ServiceFeedback の所有者を社内ユーザに変更する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "External OWD と Internal OWD を分けられる場合、社内全員に参照だけ開くなら **Internal Default を Public Read Only** にするのが最もシンプルでスケーラブルです。",
+        "sources": []
+      },
+      {
+        "question_no": 43,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) の Sales Operations は、VP of Sales にレポートする営業マネージャ向けに公開レポート／ダッシュボードフォルダを作成した。毎月、編集可能ユーザの更新に数時間かかっている。\n営業マネージャへのアクセスを自動化するための方法はどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "フォルダを「VP of Sales のロールと下位ロール（Role and Subordinates）」に共有する",
+          "B": "フォルダをロール階層の最下位ロールに共有し、上位者に自動的にアクセスさせる",
+          "C": "フォルダを「Sales Managers」公開グループに共有する",
+          "D": "フォルダを「Sales Managers」キューに共有する"
+        },
+        "correct_answers": [
+          "A",
+          "C"
+        ],
+        "explanation_ja": "フォルダ共有は **Roles and Subordinates** または **Public Groups** が適します。最下位ロールに共有しても上位者へ自動付与はされず、キュー共有は対象外です。",
+        "sources": []
+      },
+      {
+        "question_no": 44,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar はテストメソッドを作成中である。\nシステムメソッド runAs() は何を検証するか。",
+        "choices_ja": {
+          "A": "ユーザの項目レベルセキュリティ（FLS）の強制",
+          "B": "ユーザのレコード共有（行レベルセキュリティ）の強制",
+          "C": "ユーザの公開グループ割当の強制",
+          "D": "ユーザ権限（CRUD など）の強制"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Apex は通常システムモードで実行されるため共有が無視されがちですが、**runAs() はテスト内でユーザコンテキストを切り替え、レコード共有（sharing）を強制**するために使います。CRUD/FLS の強制まではしません。",
+        "sources": [
+          "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_tools_runas.htm"
+        ]
+      },
+      {
+        "question_no": 45,
+        "status": "未回答",
+        "question_ja": "Susan が、OWD が Private のレコードの Chatter フィードにファイルを投稿した。\nデフォルトで誰がそのファイルを参照できるか。2 つ選択。",
+        "choices_ja": {
+          "A": "Susan のみ",
+          "B": "Susan と、そのレコードにアクセスできるユーザ",
+          "C": "Susan と、共有された Chatter 投稿リンクを持つユーザ",
+          "D": "Susan と View All Data 権限を持つユーザ"
+        },
+        "correct_answers": [
+          "B",
+          "D"
+        ],
+        "explanation_ja": "レコードの Chatter に投稿されたファイルは、基本的に **そのレコードの共有**に従い、レコードへアクセスできるユーザが参照できます。また **View All Data** 権限者は組織内のデータを広く参照できるためファイルも参照可能です。",
+        "sources": []
+      },
+      {
+        "question_no": 46,
+        "status": "未回答",
+        "question_ja": "Universal Containers は Lightning Web Components（LWC）をビュー層に、Apex クラスをビジネスロジックにしてサポート担当の UX を改善したい。\nこのとき開発チームが注意すべき点はどれか。",
+        "choices_ja": {
+          "A": "Apex はシステムモードで動作するため、レコード可視性（共有）をコード側で強制する必要がある",
+          "B": "runAs を含むテストクラスを作成し、異なるユーザでのアクセスをテストする",
+          "C": "isShareable / isEditable / isCreatable を使って項目権限を強制する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "LWC から呼び出される Apex は原則 **system mode** で動くため、共有を無視してデータにアクセスできてしまうリスクがあります。したがって最重要は **レコード可視性（sharing）を考慮・強制**すること（with sharing、共有判定、Security.stripInaccessible 等の適用）。",
+        "sources": []
+      },
+      {
+        "question_no": 47,
+        "status": "未回答",
+        "question_ja": "ある銀行は、Contact の VIP フラグを「プライベートバンキング担当」だけが参照できるようにしたい。\n推奨アプローチはどれか。",
+        "choices_ja": {
+          "A": "VIP フラグを選択リストに変更し、Contact に新レコードタイプを追加して編集可能にする",
+          "B": "Contact のページレイアウトを分け、特定レイアウトにだけ VIP フラグを配置する",
+          "C": "VIP フラグの項目レベルセキュリティ（FLS）で、プライベートバンキング担当プロファイルにだけ表示する"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "項目の可視性制御は **FLS** が最も直接的で確実です。ページレイアウトだけでは権限を制限できず、他経路（API 等）で参照できる可能性が残ります。",
+        "sources": []
+      },
+      {
+        "question_no": 48,
+        "status": "未回答",
+        "question_ja": "あるコンサル会社は、現場コンサルが Salesforce モバイルアプリで Case を編集し、顧客サイトの画像を添付したい。一方でコールセンターの担当者はデスクトップで従来どおり同じ Lightning ページを使い続けたい。カスタマイズは最小化し、可能な限り再利用性を高めたい。\n画像キャプチャ要件を満たしつつ、デスクトップ利用者の UI を変えないための推奨はどれか。",
+        "choices_ja": {
+          "A": "モバイル表示の「編集」アクションだけを Lightning コンポーネントで上書きし、画像キャプチャを提供する。デスクトップ側は変更しない",
+          "B": "「Edit in Mobile」ボタンを追加し、そこから画像追加用の Lightning コンポーネントを開く。デスクトップ側は変更しない",
+          "C": "Lightning Experience の「編集」アクションを Lightning コンポーネントで上書きし、フォームファクタ判定で非モバイルは標準画面へリダイレクトする"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "モバイルだけに機能追加し、デスクトップの既存ページを維持するなら、**モバイルの Edit アクションのみを上書き**するのが最小変更です。デスクトップへの影響も避けられます。",
+        "sources": []
+      },
+      {
+        "question_no": 49,
+        "status": "未回答",
+        "question_ja": "営業マネージャは、チーム内で商談を相互に支援できるようにしたい。Opportunity と Account の OWD は Private。チームごとに所有者ベース共有ルールを作成し、同一チーム内の営業に商談アクセスを付与した。\nこのアプローチの副作用（サイドエフェクト）はどれか。",
+        "choices_ja": {
+          "A": "全営業が全商談に関連する Account を参照できるようになる",
+          "B": "同一チーム内の営業は、チームメンバー所有商談に関連する Account を編集できるようになる",
+          "C": "同一チーム内の営業は、チームメンバー所有商談に関連する Account を参照できるようになる",
+          "D": "全営業がすべての Account を参照できるようになる"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "子レコード（Opportunity）にアクセスすると、親（Account）へ **暗黙共有（implicit sharing）で参照アクセス**が付与されることがあります。したがって、チーム内共有で Opportunity へアクセスを開くと、その Opportunity に紐づく **Account へ参照アクセスが波及**するのが副作用です。",
+        "sources": []
+      },
+      {
+        "question_no": 50,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は、高リスク製品を販売できるのは研修済みの特定支店スタッフだけにしたい。高リスク製品の商談作成を許可する方法として適切な 2 つはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "価格表（Price Book）の OWD を「参照のみ（View Only）」にし、高リスク価格表を研修済みスタッフへ共有する",
+          "B": "高リスク価格表を研修済みスタッフへ手動共有する",
+          "C": "価格表の OWD を「アクセスなし（No Access）」にする",
+          "D": "高リスク価格表を研修済みスタッフへ共有ルールで共有する"
+        },
+        "correct_answers": [
+          "A",
+          "B"
+        ],
+        "explanation_ja": "価格表は OWD を **View Only** にしておき、販売対象者だけに **高リスク価格表を共有**するのが基本です。共有方法としては **（A の意図する共有）**や **手動共有**が該当します。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.sharing_model_fields.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 51,
+        "status": "未回答",
+        "question_ja": "Get Cloudy Consulting は厳格なセキュリティモデル（オブジェクト、項目、行レベル）を採用している。CTO は徹底的にテストしたいので、アーキテクトは Apex の自動テストで runAs() を使う。\nrunAs() を使った単体テスト設計における考慮事項として正しいものはどれか。3 つ選択。",
+        "choices_ja": {
+          "A": "runAs() はテストクラス内で項目レベル権限（FLS）を検証できる",
+          "B": "runAs() はテストクラス内でレコードレベルセキュリティ（共有）を検証できる",
+          "C": "runAs() はテストクラス内でユーザ権限や FLS を強制しない",
+          "D": "runAs() はトランザクション内の DML ステートメント数にカウントされる",
+          "E": "runAs() はテストクラス外でも使えてレコード共有を回避できる"
+        },
+        "correct_answers": [
+          "B",
+          "C",
+          "D"
+        ],
+        "explanation_ja": "runAs() は **テストクラス内**でのみ使用し、ユーザコンテキストを切り替えて **共有（record sharing）**を検証できます。一方で **CRUD/FLS は強制しません**。また runAs 自体は DML ではありませんが、runAs ブロック内の処理は同一トランザクションとしてガバナ制限に影響します。",
+        "sources": [
+          "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_tools_runas.htm"
+        ]
+      },
+      {
+        "question_no": 52,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) の営業マネージャは、取引先ごとに各ユーザの役割を定義して責任とコラボレーションを明確にしたい。さらに営業アソシエイトには次の権限だけを与えたい。\n- 取引先：参照のみ\n- 取引先に関連するケース：参照のみ\n- 取引先に関連する商談：アクセスなし（必要時のみ付与）\n共有モデルは Private、Account に共有ルールはない。\nどう実現するべきか。",
+        "choices_ja": {
+          "A": "Account Team だけで、取引先と関連する商談・ケースのアクセスを定義する",
+          "B": "Account Team、Opportunity Team、Case Team を使う",
+          "C": "Account Team と、ケースは共有ルールで共有する（商談は不要）",
+          "D": "Account Team と Case Team を使う（商談は設定不要）"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "Account Team で取引先アクセス（参照）と関連レコードの既定アクセスを設計しつつ、商談は必要なときだけ **Opportunity Team** で個別付与できます。ケースも **Case Team** で対象者を付与できるため、3 つを組み合わせるのが要件に最も合います。",
+        "sources": []
+      },
+      {
+        "question_no": 53,
+        "status": "未回答",
+        "question_ja": "DreamHouse Realty は Customer Community ライセンスで新しいコミュニティを作る。要件：\n- コミュニティからアンケート回答を入力\n- 回答は Account への参照（Lookup）を持つカスタムオブジェクトに保存\n- その Account にアクセスできる社内ユーザは、すべての回答を参照できる\n- Customer Community ユーザは、自社（同一 Account）の他ユーザの回答は参照できるが、他社の回答は参照できない\nこの要件を満たすセキュリティ設定はどれか。",
+        "choices_ja": {
+          "A": "カスタムオブジェクトを Account への Master-Detail にし、OWD は既定のままにする",
+          "B": "内部・外部とも OWD を Private にし、共有ルールで必要なアクセスを付与する",
+          "C": "内部ユーザは Public Read/Write、外部ユーザは Private にする",
+          "D": "内部・外部とも Public Read/Write にする"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "内部・外部ともに既定は **Private** にして漏えいを防ぎ、Account 参照を条件に **共有ルール**で内部ユーザ／同一 Account の外部ユーザへ必要範囲だけ開くのが最小権限で要件に合います。",
+        "sources": []
+      },
+      {
+        "question_no": 54,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は Account の OWD が Private で、次の要件がある。\n- 営業担当：自分の Account だけ参照・更新でき、Account ページの項目「segment」にはアクセスできない\n- サービス担当：全 Account を参照できるが更新できない\n- 営業マネージャ：配下営業の Account を更新できる\n- サービスマネージャ：全 Account を更新できる\n最適な解としてどれが適切か。",
+        "choices_ja": {
+          "A": "プロファイル、共有ルールを使い、OWD を Public Read Only に変更する",
+          "B": "プロファイル、手動共有、FLS を使う",
+          "C": "プロファイル、権限セット、FLS を使う",
+          "D": "プロファイル、権限セット、ロール階層、FLS を使う"
+        },
+        "correct_answers": [
+          "D"
+        ],
+        "explanation_ja": "Private OWD のまま、営業マネージャは **ロール階層**で配下レコードへアクセスできます。サービス担当の全件参照やサービスマネージャの全件更新は **権限セット**等で補完し、segment の非表示は **FLS** で制御するのが柔軟で最小変更です。",
+        "sources": []
+      },
+      {
+        "question_no": 55,
+        "status": "未回答",
+        "question_ja": "Universal Containers のアーキテクトは、組織内にセキュリティ脆弱性がないことを担保したい。\n確認すべき 2 つのテストはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "カスタムページのクロスサイトスクリプティング（XSS）テスト",
+          "B": "無効なユーザアクセス試行のテスト",
+          "C": "Apex クエリの XSS テスト",
+          "D": "SOQL インジェクションのテスト"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "Salesforce の代表的なコード脆弱性は **XSS（特に Visualforce 等のカスタムページ）** と **SOQL Injection** です。これらを重点的にテストします。",
+        "sources": []
+      },
+      {
+        "question_no": 56,
+        "status": "未回答",
+        "question_ja": "Cloud Kicks は High-Volume Community ユーザを持つコミュニティを実装している。コミュニティユーザは自分の Account または Contact に関連するレコードを参照できる必要があるため、Sharing Set を使いたい。しかし設定時に、Available Objects の一覧に出てこないオブジェクトがある。\nSharing Set の Available Objects から除外される理由として正しい 2 つはどれか。（2 つ選択）",
+        "choices_ja": {
+          "A": "そのオブジェクトの OWD が Private である",
+          "B": "そのカスタムオブジェクトに Account または Contact への参照（Lookup）がない",
+          "C": "そのオブジェクトの OWD が Public Read/Write である",
+          "D": "カスタムオブジェクトは Sharing Set に含められない"
+        },
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanation_ja": "Sharing Set は「ユーザの Account/Contact と一致するレコード」を共有するため、対象オブジェクトに **Account または Contact への Lookup** が必要です。また、OWD が **Public Read/Write** のオブジェクトはそもそも Sharing Set で共有する必要がなく、一覧から除外されることがあります。",
+        "sources": [
+          "https://help.salesforce.com/s/articleView?id=sf.networks_setting_light_users.htm&type=5"
+        ]
+      },
+      {
+        "question_no": 57,
+        "status": "未回答",
+        "question_ja": "Ursa Major Solar のマネージャは、共有／可視性の変更を検証したい。\n推奨アプローチはどれか。",
+        "choices_ja": {
+          "A": "管理者レポートとユーザレポートで有効ユーザを確認する",
+          "B": "各ロール／プロファイルの代表ユーザで「ログインとして（Login As）」を使い動作確認する",
+          "C": "Field Audit Trail で項目メタデータと可視性を監査する",
+          "D": "共有ボタンでプロファイル／権限セットの変更をテストする"
+        },
+        "correct_answers": [
+          "B"
+        ],
+        "explanation_ja": "共有・可視性はユーザ体験として確認するのが確実なので、代表ユーザで **Login As** して実際の画面・参照範囲を検証するのが推奨です。",
+        "sources": []
+      },
+      {
+        "question_no": 58,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) には、業務プロセスを強制し商談を更新するカスタム Apex クラスがある。あるプロファイルでは項目が参照のみ（Read-Only）のはずだが、このクラスにより更新されてしまう。\nどう修正すべきか。",
+        "choices_ja": {
+          "A": "SOQL に WITH SECURITY_ENFORCED を付ける",
+          "B": "with sharing の内部クラスに移す",
+          "C": "更新前に各項目について IsUpdateable() を使って更新可能か確認する",
+          "D": "クラスに with sharing を付ける"
+        },
+        "correct_answers": [
+          "C"
+        ],
+        "explanation_ja": "with sharing はレコード共有であり FLS を強制しません。項目の更新可否（FLS）は **Schema.DescribeFieldResult.isUpdateable()**（= IsUpdateable()）で確認し、更新できない項目は更新しないように制御します。",
+        "sources": []
+      },
+      {
+        "question_no": 59,
+        "status": "未回答",
+        "question_ja": "Salesforce の設定（Setup）で利用できる構成オプションについて、正しいものはどれか。2 つ選択。",
+        "choices_ja": {
+          "A": "ログイン時間（Login Hours）はプロファイルにあるが、権限セットにはない",
+          "B": "レコードタイプ（Record Types）はプロファイルにあるが、権限セットにはない",
+          "C": "タブ設定（Tab Settings）はプロファイルにあるが、権限セットにはない",
+          "D": "ページレイアウト割り当て（Page Layout Assignments）はプロファイルにあるが、権限セットにはない"
+        },
+        "correct_answers": [
+          "A",
+          "D"
+        ],
+        "explanation_ja": "**Login Hours** と **Page Layout Assignments** はプロファイル側の設定です。一方、Record Types と Tab Settings は権限セットでも設定可能です。",
+        "sources": []
+      },
+      {
+        "question_no": 60,
+        "status": "未回答",
+        "question_ja": "Universal Containers (UC) は学生向けに Customer Community（Customer Community ライセンス）を導入している。要件として、学生がコミュニティ内で自分の取引先（Account）に関連するケース（Case）にアクセスできるようにしたい。\nこの要件を満たす最適な共有手法はどれか。",
+        "choices_ja": {
+          "A": "共有セット（Sharing Set）を作成し、学生にケースを共有する",
+          "B": "共有ルール（Sharing Rule）で学生にケースを共有する",
+          "C": "共有グループ（Share Group）で学生にケースを共有する",
+          "D": "Apex 共有で学生にケースを共有する"
+        },
+        "correct_answers": [
+          "A"
+        ],
+        "explanation_ja": "Customer Community の「自分の Account に紐づくレコード」を共有するには、標準機能の **Sharing Set** が最適です（Account/Contact 参照に基づく共有を簡潔に構成できます）。",
+        "sources": []
+      }
+    ]
+  },
+  {
+    "question_no": 1,
+    "status": "未回答",
+    "question_ja": "Universal Containers (UC) のある事業部では、社内チーム内の高度な協業が必要な「依頼」を追跡するためにカスタムオブジェクトを使用している。すべての依頼には所有者（Owner）が必要だが、全従業員が依頼に協業できる必要がある。\n\n要件を満たしつつ最適化するために、Salesforceアーキテクトとして推奨すべき設定はどれか。",
+    "choices": {
+      "A": "Request オブジェクトの組織の共有設定（OWD）を「非公開（Private）」にし、全プロファイルに対して Request に「すべてのデータを変更（Modify All Data）」権限を付与する。",
+      "B": "Request オブジェクトの OWD を「公開/参照・編集（Public Read/Write）」にする。",
+      "C": "Request オブジェクトの OWD を「非公開（Private）」にし、条件付き共有ルールで全 Request レコードを全内部ユーザに共有する。",
+      "D": "Request オブジェクトの OWD を「公開/参照のみ（Public Read Only）」にし、ロール階層を設定する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "全従業員が同じ依頼レコードを共同で更新できる要件なら、最もシンプルで運用・性能面でも最適なのは OWD を「公開/参照・編集」にすること。不要な共有ルールや過剰権限（Modify All Data）を避けられる。"
+  },
+  {
+    "question_no": 2,
+    "status": "未回答",
+    "question_ja": "UC のサービス担当者は、ケース（Case）の OWD が非公開（Private）の環境で、ケースに対して「すべて表示（View All）」権限を持つプロファイルに割り当てられている。担当者が顧客対応に必要な関連情報へアクセスできるようにするため、アーキテクトが考慮すべき点はどれか。（2つ選択）",
+    "choices": {
+      "A": "取引先責任者（Contact）が「親に従属（Controlled by Parent）」の場合、サービス担当者は UC のすべての取引先責任者レコードにアクセスできない。",
+      "B": "暗黙の共有（Implicit Sharing）により、サービス担当者は UC のすべての取引先（Account）レコードにアクセスできる。",
+      "C": "取引先（Account）の OWD が非公開（Private）のため、サービス担当者は UC のすべての取引先レコードにアクセスできない。",
+      "D": "取引先責任者（Contact）が「親に従属（Controlled by Parent）」の場合、サービス担当者は UC のすべての取引先責任者レコードにアクセスできる。"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "ケースに対して View All を付与しても、取引先（Account）自体の OWD が非公開なら取引先全件へのアクセスは自動では得られない。一方、親の暗黙共有（Parent implicit sharing）は、子（ケース/商談/取引先責任者等）へのアクセスを持つユーザに対して親取引先へ（通常は参照権限）を付与する仕組みであり、取引先全件アクセスを保証するものではない。また Contact が「親に従属」の場合は、親取引先へのアクセスがないと Contact へもアクセスできない。"
+  },
+  {
+    "question_no": 3,
+    "status": "未回答",
+    "question_ja": "UC のサポート担当者 Jane は、過去7日以内に作成された自分のオープンケースを表示するレポートを作成し、「非公開レポート（Private Reports）」フォルダに保存した。\n\nこのレポートを表示・実行できるのは誰か。",
+    "choices": {
+      "A": "レポート所有者と、「すべてのデータを参照（View All Data）」権限を持つユーザ",
+      "B": "レポート所有者のみ",
+      "C": "レポート所有者と、所有者より上位のロール階層のユーザ",
+      "D": "レポート所有者と、「私の非公開レポート（My Private Reports）」フォルダへのアクセスを付与されたユーザ"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "非公開（Private）に保存したレポートは、作成者（レポート所有者）のみが閲覧・実行できる。たとえ View All Data を持っていても他ユーザは参照できない。"
+  },
+  {
+    "question_no": 4,
+    "status": "未回答",
+    "question_ja": "コーポレートのID・アクセス管理チームが、Salesforce 組織内のユーザ設定を監査したい。\n\n監査を実施できるように付与すべき権限はどれか。（2つ選択）",
+    "choices": {
+      "A": "すべてのユーザを表示（View All Users）",
+      "B": "設定と構成を表示（View Setup and Configuration）",
+      "C": "User オブジェクトに対する参照（View）権限",
+      "D": "すべてのデータを参照（View All Data）"
+    },
+    "correct_answer": [
+      "A",
+      "B"
+    ],
+    "explanation_ja": "「設定と構成を表示」は設定画面の参照を可能にし、プロファイル/ロール/権限セット等の確認に必要。「すべてのユーザを表示」は全ユーザレコード（ログイン履歴等を含む）を参照するために必要。View All Data は過剰権限。"
+  },
+  {
+    "question_no": 5,
+    "status": "未回答",
+    "question_ja": "商談（Opportunity）が「クローズ」になった際に関連する注文（Order）を作成する新しいトリガをテスト・デプロイした後、商談をクローズすると権限エラーが表示されるという苦情が出た。\n\nこのエラーはどのように発生したか。",
+    "choices": {
+      "A": "トリガハンドラクラスに sharing キーワードがなく、ユーザが商談に関連する注文にアクセスできないため。",
+      "B": "トリガハンドラクラスが「with sharing」を使用しており、ユーザが商談に関連する注文にアクセスできないため。",
+      "C": "注文作成時に RunAs() を使うべきだったため。",
+      "D": "トリガが IsCreateable() を使っており、ユーザが Order オブジェクトに作成権限を持たないため。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "ハンドラクラスが with sharing の場合、実行コンテキストで共有（レコードアクセス）が評価され、ユーザが注文に必要なアクセスを持たないと DML 等で例外が発生し得る。システムコンテキストで作成させる意図なら without sharing を検討する（ただしオブジェクト権限/FLS など別のセキュリティは要考慮）。"
+  },
+  {
+    "question_no": 6,
+    "status": "未回答",
+    "question_ja": "UC は採用アプリを Salesforce Platform 上に構築した。HR から「Referral」カスタムオブジェクトは全内部ユーザが編集できるようにしてほしいと言われている。あるリクルータが共同作業のために手動共有で同僚へレコード共有しようとしたが、レコード詳細に［共有］ボタンが表示されない。\n\n考えられる技術的な理由はどれか。",
+    "choices": {
+      "A": "Referral の OWD が「公開/参照のみ（Public Read Only）」であるため。",
+      "B": "Referral の OWD が「非公開（Private）」であるため。",
+      "C": "Referral の OWD が「公開/フルアクセス（Public Full Access）」であるため。",
+      "D": "Referral の OWD が「公開/参照・編集（Public Read/Write）」であるため。"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "OWD が公開/参照・編集の場合、全ユーザが全レコードを参照・編集できるため、手動共有は不要となり［共有］ボタンが表示されない（通常、非公開または公開/参照のみ等で共有が必要な場合に表示）。"
+  },
+  {
+    "question_no": 7,
+    "status": "未回答",
+    "question_ja": "Cloud Kicks の環境：ユーザ 50,000。24×7 のコールセンター（25,000名、社員と委託含む）。営業組織 15,000名。営業組織が商談（Opportunity）のカスタム項目（priority、NextStep）を約 120,000 件更新し、さらに非常に深い Territory 階層の更新を 20,000 件実施した。さらに、Case を参照する Action Plan カスタムオブジェクトの Next Step 項目の大量更新も行った。\n\nその後、ユーザに「Group membership lock」エラーが発生した。最も考えられる原因はどれか。",
+    "choices": {
+      "A": "システム起因の共有ルール再計算によりロック競合が発生しているため。",
+      "B": "Territory の更新により Territory オブジェクトでロック競合が発生しているため。",
+      "C": "Action Plan の更新により Case レコードでロック競合が発生しているため。",
+      "D": "商談の更新により Account レコードでロック競合が発生しているため。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "大量更新や複雑な共有設定変更により共有再計算が走ると、グループメンバーシップ（共有計算に関わる内部テーブル）に対してロックが必要になり、競合が発生しやすい。"
+  },
+  {
+    "question_no": 8,
+    "status": "未回答",
+    "question_ja": "UC は製品パンフレットを Salesforce ファイルとして保存している。Sarah は会議中に見込み顧客へパンフレットの「公開リンク」を共有したが、会議後は顧客がそのファイルへアクセスできないようにしたい。\n\nSarah はどうすべきか。",
+    "choices": {
+      "A": "公開リンクを削除する。",
+      "B": "ファイルを別フォルダへ移動する。",
+      "C": "ファイル自体を削除する。",
+      "D": "ファイル名を変更する。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "公開リンクを削除すれば、そのリンク経由のアクセスは無効になり、ファイルへの明示的な共有権限を持つユーザのみが参照できる。"
+  },
+  {
+    "question_no": 9,
+    "status": "未回答",
+    "question_ja": "UC は従業員向けの社内NPS（ネット・プロモーター・スコア）を追跡するカスタムオブジェクトを持つ。\n\n従業員の上長（マネージャ）が部下の NPS レコードへアクセスできないようにするにはどうすべきか。",
+    "choices": {
+      "A": "Apex 共有で、マネージャ用プロファイルに対する NPS の共有レコードを削除する。",
+      "B": "マネージャ用プロファイル／権限セットから、作成・参照・編集・削除を外す。",
+      "C": "OWD を「非公開（Private）」にし、NPS オブジェクトの「階層を使用したアクセス（Access Using Hierarchies）」をオフにする。",
+      "D": "条件付き共有ルールで、ロール階層のマネージャ以上へのアクセスを外す。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "OWD を非公開にし、階層によるアクセスを無効化すると、上位ロール（マネージャ）によるロール階層の暗黙アクセスが遮断され、共有ルールや手動共有など明示的に付与された場合のみアクセス可能となる。"
+  },
+  {
+    "question_no": 10,
+    "status": "未回答",
+    "question_ja": "UC は Partner Community（パートナーコミュニティ）を使って、海外の代理店（Affiliate）と商談（Opportunity）を管理している。ある代理店が急成長し、社内営業組織を次の4階層に再編した：Sales VP > Director of Sales > Sales Manager > Sales Reps。\n\nUC はこの構造に沿って商談へのアクセスを開放できるようにしたい。\n\nこの要件に対してアーキテクトが直面する主な問題は何か。",
+    "choices": {
+      "A": "パートナーユーザロールは3階層までに制限される。",
+      "B": "Partner Community はロール階層をサポートしない。",
+      "C": "スーパー ユーザ（Super User）は Partner Community で機能しない。",
+      "D": "チャネルマネージャのロールは Partner Community に共有できない。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "パートナーアカウント配下で作成されるパートナーロール階層は既定で3階層（例：Partner User/Manager/Executive）に制限されるため、4階層構造をそのまま表現できない。"
+  },
+  {
+    "question_no": 11,
+    "status": "未回答",
+    "question_ja": "UC は、出荷追跡情報を表示するカスタム Visualforce ページを持つ（対象はカスタムオブジェクト、OWD は非公開）。IT は、ユーザに許可された情報のみ表示されることを保証したい。\n\nユーザに許可された項目（フィールド）だけを表示するために使用すべき Apex メソッドはどれか。",
+    "choices": {
+      "A": "isReadable()",
+      "B": "isShowable()",
+      "C": "isAccessible()",
+      "D": "isViewable()"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "Visualforce/Apex でフィールドを取得・表示する前に、ログインユーザがそのフィールドへアクセス可能かを Schema.DescribeFieldResult の isAccessible() で確認する。"
+  },
+  {
+    "question_no": 12,
+    "status": "未回答",
+    "question_ja": "以前のプロジェクトで Shield Platform Encryption（プラットフォーム暗号化）が導入されている。最近の監査で、プライバシーチームが取引先（Account）の3項目（請求先住所（Billing Street）、請求先市区町村（Billing City）、電話（Phone））も追加で保護が必要だと判断した。\n\n新しいポリシー変更に対して、アーキテクトはどのように進めるべきか。",
+    "choices": {
+      "A": "暗号化ポリシー（Encryption Policy）を使用し、既存レコードの値も暗号化されるよう Salesforce に連絡して更新してもらう。",
+      "B": "Classic Encryption を使って全フィールドを保護し、Salesforce に暗号化検証の支援を依頼する。",
+      "C": "暗号化ポリシーを使用し、Salesforce から暗号化完了メールが届くのを待つ。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "Shield Platform Encryption では暗号化ポリシーで対象フィールドを追加し、既存データの再暗号化（バックフィル）については Salesforce の手順に従い実施（必要に応じて Salesforce サポートへ連絡）する。"
+  },
+  {
+    "question_no": 13,
+    "status": "未回答",
+    "question_ja": "営業担当 John は、自分が参照のみ権限の取引先（Account）レコードを更新したい。所有者 Paul は、そのレコードを John に手動共有し、編集権限を付与した。\n\nAccount の OWD が「公開/参照のみ（Public Read-Only）」の場合、システム上の影響は何か。",
+    "choices": {
+      "A": "既存の AccountShare が更新され、RowCause は「Manual」、Access Level は「Read/Write」になる。",
+      "B": "新しい AccountShare が作成され、RowCause は「Owner」、Access Level は「Full」になる。",
+      "C": "新しい AccountShare が作成され、RowCause は「Manual」、Access Level は「Read/Write」になる。",
+      "D": "既存の AccountShare が更新され、RowCause は「Owner」、User/Group は「John」になる。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "所有者が手動共有すると、共有テーブル（AccountShare）に RowCause=Manual の新規行が作成され、付与したアクセスレベル（Read/Write など）が記録される。"
+  },
+  {
+    "question_no": 14,
+    "status": "未回答",
+    "question_ja": "Apex 共有理由（Apex Sharing Reasons）の利用に関して、アーキテクトが考慮すべき理由はどれか。（2つ選択）",
+    "choices": {
+      "A": "プログラム共有（Apex マネージド共有）のトラブルシュートがしやすくなるため。",
+      "B": "条件付き共有ルール（Criteria-Based Sharing）で使える追加条件が増えるため。",
+      "C": "所有者変更時に Share レコードが削除されないようにできるため。",
+      "D": "所有者変更時に Share レコードが削除されるようにできるため。"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "共有理由を使うと、Share の RowCause が識別しやすくなり、運用・デバッグが容易になる。また、共有理由（特定 RowCause）で作成した共有は、所有者変更時に自動で削除されない（永続化させやすい）ため要件に合う。"
+  },
+  {
+    "question_no": 15,
+    "status": "未回答",
+    "question_ja": "Ursa Major Solar はケース（Case）を追跡に使用しており、ケースチーム（Case Teams）を有効化して複数のサポート担当がケースを管理できるようにしている。あるユーザが Case のリストビューを作成している。\n\n「所有者で絞り込み（Filter by owner）」で表示される選択肢はどれか。（2つ選択）",
+    "choices": {
+      "A": "自分のケースチーム（My case teams）",
+      "B": "公開グループ（Public groups）",
+      "C": "キュー所有のケース（Queue owned cases）",
+      "D": "ロール（Roles）"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "ケースの所有者として扱われるのはユーザまたはキュー。加えて、ケースチーム関連のフィルタ（My case teams）が用意される。公開グループやロールは「ケースの所有者」ではないため、このフィルタには出ない。"
+  },
+  {
+    "question_no": 16,
+    "status": "未回答",
+    "question_ja": "Cloud Kicks は、ユーザへ「暗黙のレコードアクセス（Implicit record access）」を付与したい。\n\n目的を達成できる選択肢はどれか。（2つ選択）",
+    "choices": {
+      "A": "親キャンペーン（Campaign）の所有者に、関連リード（Lead）へのアクセスを付与する。",
+      "B": "条件付き共有ルールにより、子ケースを持つユーザに親取引先（Account）を参照のみで付与する。",
+      "C": "親取引先の所有者に、子商談（Opportunity）へのアクセスを付与する。",
+      "D": "子ケースにアクセスできるユーザに、親取引先（Account）を参照のみで付与する。"
+    },
+    "correct_answer": [
+      "C",
+      "D"
+    ],
+    "explanation_ja": "暗黙の共有には、親子関係にもとづく暗黙アクセス（例：ケース等の子レコードへのアクセスにより親取引先へ参照アクセス）や、所有者ベースでの子レコードアクセス（親取引先の所有者は子商談へアクセス）などがある。"
+  },
+  {
+    "question_no": 17,
+    "status": "未回答",
+    "question_ja": "UC は、正社員の内部ユーザは全員リード（Lead）を閲覧できるようにしたい。一方で、業務委託や臨時スタッフの一部にもリードを見せたい。\n\nこの要件を実現するために推奨すべきリードの OWD はどれか。",
+    "choices": {
+      "A": "リードの OWD を「非公開（Private）」にする。",
+      "B": "リードの OWD を「公開/参照・編集（Public Read/Write）」にする。",
+      "C": "リードの OWD を「公開/参照のみ（Public Read Only）」にする。",
+      "D": "リードの OWD を「公開/参照・編集・移管（Public Read/Write/Transfer）」にする。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "まず OWD を非公開にして可視性を最小化し、正社員や一部の委託/臨時要員へは共有ルールや権限セット等で明示的に付与するのが、要件（対象者を限定）に最も合う。"
+  },
+  {
+    "question_no": 18,
+    "status": "未回答",
+    "question_ja": "UC は世界中（10か国・100以上の地域）に拠点があり、データ可視性制御のため複雑なロール階層を構築している。新年度に向けてロールを再編し、取引先（Account）の所有者も再割り当てする予定である。\n\nこの状況でアーキテクトが考慮すべき点はどれか。（2つ選択）",
+    "choices": {
+      "A": "性能向上のために一時的な「退避用取引先（parking lot account）」を使う。",
+      "B": "取引先の所有者を大量に置換するとデータスキュー（data skew）の原因になり得る。",
+      "C": "複雑なロール階層を変更すると、大規模な共有再計算が発生し得る。",
+      "D": "組織の共有設定をすべて非公開に制限する。"
+    },
+    "correct_answer": [
+      "B",
+      "C"
+    ],
+    "explanation_ja": "特定ユーザに所有権が集中すると所有者データスキューが起きやすく性能劣化の原因となる。加えて、ロール階層の大幅変更は共有再計算（Sharing recalculation）を誘発し、時間と負荷が大きい。"
+  },
+  {
+    "question_no": 19,
+    "status": "未回答",
+    "question_ja": "UC は世界中に多数のディーラー（販売店）を持ち、ディーラーがコンテナの保守を行う。ディーラー向けに Partner Community を導入し、コミュニティ共有モデルは非公開である。各販売店にはディーラーマネージャがいて、サービスエージェントを管理している。\n\nディーラーマネージャに「自分の配下エージェントが起票したケースのみ」可視化させる最適な方法はどれか。",
+    "choices": {
+      "A": "ケースの外部 OWD を公開/参照のみに変更する。",
+      "B": "共有セット（Sharing Set）で、サービスエージェントが作成したケースをディーラーマネージャへ共有する。",
+      "C": "共有ルールで、サービスエージェントが作成したケースをディーラーマネージャへ共有する。",
+      "D": "ロール階層により、エージェントのケースは自動的にディーラーマネージャに見える。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "コミュニティ（外部ユーザ）で、アカウント/連絡先の関連に基づく共有を行う場合は共有セットが最適。外部共有の要件に合致しやすい。"
+  },
+  {
+    "question_no": 20,
+    "status": "未回答",
+    "question_ja": "UC は Sales Cloud を導入し、高リスク製品を販売できるのは特定の支店スタッフ（研修済み）だけにしたい。高リスク製品用の商談を作成できるのもそのスタッフに限定したい。\n\nアーキテクトはどうすべきか。",
+    "choices": {
+      "A": "価格表（Price Book）の OWD を「参照のみ（View）」にして、高リスク価格表を研修済みスタッフに共有する。",
+      "B": "価格表の OWD を「参照のみ（View）」にして、共有ルールで高リスク価格表を研修済みスタッフに共有する。",
+      "C": "価格表の OWD を「参照のみ（View）」にして、手動共有で高リスク価格表を研修済みスタッフに共有する。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "価格表は OWD を「参照のみ（View）」にしておき、特定の価格表を必要なユーザへ共有する。要件のように限定したい場合、適切な共有（例：手動共有）で対象者へ付与する。"
+  },
+  {
+    "question_no": 21,
+    "status": "未回答",
+    "question_ja": "UC は従業員の基本情報を Employee カスタムオブジェクトに保存している（OWD は公開/参照のみ）。ただし給与・等級・直近評価などの機微項目はアクセスを制限したい。\n\n項目レベルセキュリティ（FLS）以外で、これらの情報を人事チームにだけ見せる方法として利用できる選択肢はどれか。",
+    "choices": {
+      "A": "Employee を非公開に変更し、自己参照 Lookup により制限情報を別レコードとして持つ。",
+      "B": "親に従属の新カスタムオブジェクトを作成し、Employee と主従（Master-Detail）で制限情報を持つ。",
+      "C": "FLS 以外の選択肢はない。",
+      "D": "OWD を非公開にした新カスタムオブジェクトを作成し、Employee に Lookup で関連付けて制限情報を持つ。"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "別オブジェクト（OWD 非公開）に機微情報を分離し、権限を人事チームにのみ付与することで、Employee 本体の公開性を維持しつつ機微データを保護できる。主従だと親の共有に従属するため不適。"
+  },
+  {
+    "question_no": 22,
+    "status": "未回答",
+    "question_ja": "コミュニティユーザが商談（Opportunity）で共同作業できるようにするには、どのライセンス種別を付与する必要があるか。",
+    "choices": {
+      "A": "Customer Community Plus",
+      "B": "Partner Community",
+      "C": "Customer Community",
+      "D": "Sales Community"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "商談への参照・編集など、営業プロセスでの協業を想定した外部ユーザには Partner Community ライセンスが適している。"
+  },
+  {
+    "question_no": 23,
+    "status": "未回答",
+    "question_ja": "UC は標準の作業指示（Work Order）オブジェクトを使って現場担当者への作業指示を管理している。Work Order には 400 以上の項目があり、8種類のプロセス（タイプ）がある。現場担当者には、自分が対応する Work Order タイプに必要な情報だけを表示したい。\n\nこの要件を実現する推奨策はどれか。",
+    "choices": {
+      "A": "Work Order の表示アクションをカスタム LWC で上書きし、タイプ別の表示項目をカスタムメタデータで定義する。",
+      "B": "Work Order のタイプ（レコードタイプ）ごとに異なるページレイアウトを用意し、タイプ別の重要情報をセクションで分ける。",
+      "C": "Dynamic Forms を使ってセクションを追加し、Work Order のレコードタイプに応じて表示制御する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "標準 Work Order は（前提として）Dynamic Forms の対象外であるため、レコードタイプ×ページレイアウトで表示情報を出し分けるのが現実的かつ標準的。"
+  },
+  {
+    "question_no": 24,
+    "status": "未回答",
+    "question_ja": "DreamHouse Realty の状況：\n- ユーザ1は、ACME 取引先（Account）を所有するユーザ2のデフォルト取引先チーム（default account team）に含まれている。\n- ユーザ2が、ACME 取引先上でユーザ1のチームメンバーアクセス権を変更した。\n\nこの変更の影響はどれか。",
+    "choices": {
+      "A": "影響するのは ACME 取引先のみ",
+      "B": "デフォルト取引先チームに影響する",
+      "C": "ACME の子取引先すべてに影響する",
+      "D": "デフォルト商談チームに影響する"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "取引先レコード上でのチームメンバーアクセス変更は、そのレコードに対してのみ有効で、デフォルトチーム設定や他レコードには波及しない。"
+  },
+  {
+    "question_no": 25,
+    "status": "未回答",
+    "question_ja": "UC は、出荷情報（Shipment：カスタムオブジェクト、OWD 非公開）を表示するカスタム Lightning コンポーネントと Apex クラスを作成した。営業マネージャから次の苦情がある：\n- 自分のチームの Shipment レコードが他ユーザから見えてしまう。\n- Shipment 金額はマネージャだけに見せたいが、営業担当も見えている。\n\n原因となる「実装漏れ」はどれか。（2つ選択）",
+    "choices": {
+      "A": "Apex クラスで isSearchable キーワードを使ってレコード可視性を保証していない。",
+      "B": "Apex クラスで with sharing を使って共有ルールを強制していない。",
+      "C": "テストクラスで runAs を使ってユーザ権限と FLS を強制していない。",
+      "D": "Apex クラスで isAccessible() を使って項目（フィールド）アクセス可否を確認していない。"
+    },
+    "correct_answer": [
+      "B",
+      "D"
+    ],
+    "explanation_ja": "レコード可視性（共有）を守るには Apex 側で with sharing を適切に適用する必要がある。項目可視性を守るには FLS を Schema.describe で確認し、isAccessible() 等で制御する必要がある。"
+  },
+  {
+    "question_no": 26,
+    "status": "未回答",
+    "question_ja": "UC（非営利）は 2,000万人超の会員（寄付者）を取引先として管理している。地域別に Donations Rep に割り当てた結果、各担当が 50,000 件以上の取引先を所有することになり、システム性能が大幅に低下した。\n\n考えられる原因はどれか。",
+    "choices": {
+      "A": "Donations Rep が割り当て取引先へアクセスすること自体が原因。",
+      "B": "取引先（Account）の OWD が非公開であることが原因。",
+      "C": "取引先の所有者データスキュー（Account ownership data skew）が発生している。",
+      "D": "共有再計算がキックされたため。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "少数ユーザが大量レコードを所有すると所有者データスキューが発生し、ロック競合や共有計算負荷などにより性能劣化を招きやすい。"
+  },
+  {
+    "question_no": 27,
+    "status": "未回答",
+    "question_ja": "Apex マネージド共有（programmatic sharing）でカスタムオブジェクトのレコードにアクセス権を付与したユーザが、所有者変更後もアクセスを失わないようにするには、アーキテクトは何を推奨すべきか。",
+    "choices": {
+      "A": "with sharing を使ってレコード可視性が考慮されるようにする。",
+      "B": "そのカスタムオブジェクト用に特定の Apex 共有理由（Sharing Reason）を作成する。",
+      "C": "_Share オブジェクトに RowCause「Manual」で新規レコードを作成する。",
+      "D": "Apex で runAs を使って可視性を強制する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "共有理由（RowCause）を使った Apex 共有で Share レコードを作成すると、所有者変更時に共有が削除されにくく、意図した共有を維持しやすい。RowCause=Manual は所有者変更で取り消されることがある。"
+  },
+  {
+    "question_no": 28,
+    "status": "未回答",
+    "question_ja": "銀行会社は、顧客の生年月日（Date of Birth）フィールドを「銀行担当（Banking Reps）が検索できる」ようにしたいが、編集できるのは「カスタマーサポート担当（Customer Support Reps）」のみにしたい。\n\n推奨アプローチはどれか。",
+    "choices": {
+      "A": "検証ルールで、user.profilename が Customer Support Rep の場合のみ true を返すようにする。",
+      "B": "生年月日フィールドの FLS を、Customer Support Rep は「表示可（Visible）」、Banking Rep は「表示可＋参照のみ（Visible + Read-Only）」に設定する。",
+      "C": "生年月日を Contact の検索レイアウトに追加し、Customer Support Rep のページレイアウトで必須にする。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "閲覧/編集制御はまず FLS で行うのが標準。Banking Rep を参照のみにすれば検索・表示は可能で、編集は Customer Support Rep のみに限定できる。"
+  },
+  {
+    "question_no": 29,
+    "status": "未回答",
+    "question_ja": "Ursa Major Solar は研究パートナー向けの AppExchange 管理パッケージを開発している。パッケージはパートナーごとに秘密鍵を生成してコードで使用する必要がある。Ursa Major Solar の IT 担当者は接続問題のデバッグのため秘密鍵の値へアクセスできる必要があるが、パートナー（インストール先の顧客）はその値へアクセスできてはならない。\n\n最も適切な保存場所はどれか。",
+    "choices": {
+      "A": "管理パッケージ内クラスの static 変数",
+      "B": "管理パッケージ内の保護されたカスタム設定（Protected Custom Setting）のテキスト項目",
+      "C": "管理パッケージ内カスタムオブジェクトの暗号化項目",
+      "D": "管理パッケージ内のリスト型カスタム設定のテキスト項目"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "Protected Custom Setting はパッケージ提供元（ISV）側からは参照でき、購買側の通常ユーザからは保護できるため、鍵などの秘匿値の格納に適する。"
+  },
+  {
+    "question_no": 30,
+    "status": "未回答",
+    "question_ja": "次のコード断片をレビューする。\n\nGet Cloudy Consulting は、このコードに潜在的なセキュリティ脆弱性がないかアーキテクトに評価してほしい。\n\nアーキテクトとして適切な指摘はどれか。",
+    "choices": {
+      "A": "アクセス制御（Access Control）が脅威である",
+      "B": "クロスサイトスクリプティング（XSS）が脅威である",
+      "C": "任意リダイレクト（Arbitrary Redirect）が脅威である",
+      "D": "SOQL インジェクションが脅威である"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "（提示コードがユーザ入力をエスケープせずに出力する等の場合）XSS が典型的な脅威となる。"
+  },
+  {
+    "question_no": 31,
+    "status": "未回答",
+    "question_ja": "既定では、パートナー取引先で最初の外部ユーザを作成したとき、いくつのロールが作成されるか。",
+    "choices": {
+      "A": "3",
+      "B": "2",
+      "C": "1",
+      "D": "0"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "最初のパートナーユーザ作成時に、そのパートナー取引先用のロール階層（Partner User / Partner Manager / Partner Executive など）が3つ作成される。"
+  },
+  {
+    "question_no": 32,
+    "status": "未回答",
+    "question_ja": "UC は非アクティブ取引先をレビューする小規模で多様なユーザグループを選定した。共有モデルは非公開。公開グループを作成し、そのグループに非アクティブ取引先を見せる共有ルールを作成したが、一部ユーザが共有された取引先をまったく見られないと言っている。\n\n根本原因として考えられるのはどれか。",
+    "choices": {
+      "A": "取引先がロール階層の上位ユーザに所有されているため。",
+      "B": "そのユーザのプロファイルに取引先（Account）オブジェクトへのアクセス権がないため。",
+      "C": "そのユーザのページレイアウトが所有者と異なるため。",
+      "D": "そのユーザの権限セットが「Active」の取引先しか許可していないため。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "共有ルールでレコード共有しても、オブジェクト権限（プロファイル/権限セットでの参照権限）がなければレコードは表示できない。"
+  },
+  {
+    "question_no": 33,
+    "status": "未回答",
+    "question_ja": "UC の営業マネージャは、顧客請求書（Invoice）を Salesforce で閲覧したい。請求書データは ERP がマスタであるため、アーキテクトは外部オブジェクト（External Object）で Invoice を表現し、取引先（Account）と Invoice の間に参照関係（Lookup）を設定した。\n\n営業マネージャに請求書データへのアクセスを付与するにはどうすべきか。",
+    "choices": {
+      "A": "共有ルールで、営業マネージャロールに請求書レコードを共有する。",
+      "B": "営業マネージャのプロファイルで Invoice 外部オブジェクトのオブジェクト権限を制御する。",
+      "C": "手動共有で請求書を営業マネージャに共有する。",
+      "D": "共有セットで、営業マネージャロールへ共有する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "外部オブジェクトは共有ルール/手動共有/共有セットの対象外であることが多く、基本は外部オブジェクトのオブジェクト権限（プロファイル/権限セット）で参照可否を制御する。"
+  },
+  {
+    "question_no": 34,
+    "status": "未回答",
+    "question_ja": "DreamHouse Realty はヘルスケア業界と提携し、顧客の健康状態に関連する住居改修を支援している。顧客メモを保存したいが、これは長文になりやすく PII/PHI を含む可能性がある。HIPAA 準拠のため、保存時（at rest）と通信時（in transit）で暗号化が必要。\n\n要件を満たすため、アーキテクトは何を行うべきか。",
+    "choices": {
+      "A": "「暗号化テキスト（Text (Encrypted)）」のカスタム項目を作成し、メモを移行する。",
+      "B": "Salesforce は標準で保存時に暗号化されているため、何もしなくてよい。",
+      "C": "Apex トリガと Apex Crypto を使って保存時に暗号化する。",
+      "D": "Salesforce Shield Platform Data Encryption を有効化し、顧客メモ項目を暗号化対象にする。"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "規制準拠（保存時/通信時の強化）と運用性の観点から、Shield Platform Encryption（プラットフォーム暗号化）で該当項目を暗号化対象にするのが適切。"
+  },
+  {
+    "question_no": 35,
+    "status": "未回答",
+    "question_ja": "UC は外部オブジェクトでレガシー ERP の Invoice データを取得している。財務チームは取引先（Account）画面で Invoice レコードを見たい。\n\n財務ユーザのプロファイルで外部オブジェクトへのアクセスを付与することに加えて、アーキテクトが推奨すべき機能はどれか。",
+    "choices": {
+      "A": "Apex マネージド共有でレコードアクセスを付与する。",
+      "B": "取引先ページレイアウトに Invoice の関連リスト（Related List）を追加する。",
+      "C": "条件付き共有ルールでアクセスを付与する。",
+      "D": "所有者ベース共有ルールでアクセスを付与する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "外部オブジェクトは Apex 共有や共有ルールの対象外であるため、UI 上で表示するには取引先側に外部関連リストを配置する。"
+  },
+  {
+    "question_no": 36,
+    "status": "未回答",
+    "question_ja": "Cloud Kicks は Enterprise Territory Management（ETM）を使用している。\n\nこの構成でサポートされる設定はどれか。（3つ選択）",
+    "choices": {
+      "A": "Metadata API のサポート",
+      "B": "協業予測（Collaborative Forecasting）との統合",
+      "C": "テリトリに対してレポート/ダッシュボードフォルダを共有する",
+      "D": "テリトリを使って公開グループを作成する",
+      "E": "商談へのテリトリ割り当て"
+    },
+    "correct_answer": [
+      "A",
+      "B",
+      "E"
+    ],
+    "explanation_ja": "ETM では Territory2 などが Metadata API で扱え、協業予測との連携や商談へのテリトリ割り当て（手動/自動）などが可能。一方、フォルダ共有先として Territory を直接指定するなどは想定されない。"
+  },
+  {
+    "question_no": 37,
+    "status": "未回答",
+    "question_ja": "UC は Sales Cloud を導入し、営業担当が製品（Product）にアクセスし、顧客向けの商談（Opportunity）を作成できるようにしたい。\n\n価格表（Price Book）の組織の共有設定（OWD）はどうすべきか。",
+    "choices": {
+      "A": "View",
+      "B": "Use",
+      "C": "Public Read Only",
+      "D": "Public Read Write"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "価格表のアクセスは共有設定ではなく「Use（使用）」権限で制御される。営業担当が商談で製品を追加できるようにするには、価格表に対して Use 権限が必要。"
+  },
+  {
+    "question_no": 38,
+    "status": "未回答",
+    "question_ja": "Cloud Kicks の要件：\n- カスタム Apex コードに厳格なアーキテクチャを適用する。\n- SOQL は再利用可能なクラスに集約する。\n- Apex トランザクションの文脈により、クエリを「with sharing」または「without sharing」で実行できる必要がある。\n\n要件を満たす方法はどれか。（2つ選択）",
+    "choices": {
+      "A": "SystemSOQLQueries と UserSOQLQueries を作成し、前者を without sharing、後者を with sharing にする。",
+      "B": "再利用可能な SOQLQueries クラスを作り、ユーザコンテキストが必要なメソッドに with sharing、システムコンテキストが必要なメソッドに without sharing を指定する。",
+      "C": "SOQLQueries クラスには sharing 指定をせず、runAs() で動的にコンテキストを切り替える。",
+      "D": "SOQLQueries クラスに with/without sharing を指定せず、呼び出し元のコンテキストに委ねる。"
+    },
+    "correct_answer": [
+      "B",
+      "D"
+    ],
+    "explanation_ja": "sharing モードはクラス/メソッド指定、または未指定で呼び出し元の文脈に従わせる方法がある。runAs はテスト専用で実行時の sharing 切替には使えない。"
+  },
+  {
+    "question_no": 39,
+    "status": "未回答",
+    "question_ja": "大規模なロール階層の再編（realignment）に対して、Salesforce が有効化できる高度なツールはどれか。",
+    "choices": {
+      "A": "外部 OWD を公開/参照のみにする",
+      "B": "Granular locking（粒度の細かいロック）",
+      "C": "Divisions によるパーティショニング",
+      "D": "Skinny Table Indexing"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "グループメンバーシップ計算などで大規模更新が発生する場合、粒度の細かいロック（Granular Locking）によりロック競合を緩和できる。"
+  },
+  {
+    "question_no": 40,
+    "status": "未回答",
+    "question_ja": "取引先（Account）の重複レコードが大量に作成され、共有ルールも多数作成されている。最も考えられる理由はどれか。",
+    "choices": {
+      "A": "Account のオブジェクト権限が作成・参照・編集であるため",
+      "B": "Account の OWD が公開/参照・編集であるため",
+      "C": "Account の OWD が非公開（Private）であるため",
+      "D": "Account の OWD が公開/参照のみであるため"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "OWD が非公開だとユーザが既存取引先を見つけられず重複作成しやすい。その結果、可視性を広げるための共有ルールが増えがち。"
+  },
+  {
+    "question_no": 41,
+    "status": "未回答",
+    "question_ja": "UC は Customer Community を導入し、ディストリビュータには Customer Community Plus ライセンスを付与している。あるディストリビュータから「同じディストリビュータ内の他エージェントが起票したケースを、特定のコミュニティユーザ（エージェント）に見せたい」と要望があった。\n\nこの要件を満たす機能はどれか。",
+    "choices": {
+      "A": "コミュニティ管理者権限を付与する権限セット",
+      "B": "Delegated External User（委任された外部ユーザ）",
+      "C": "Partner Community Admin",
+      "D": "Partner Super User（パートナーのスーパー ユーザ）"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "パートナーのスーパー ユーザは、同一パートナーアカウントのロール階層内で自分と同レベル以下の外部ユーザのレコードにアクセスできるようにするための機能。"
+  },
+  {
+    "question_no": 42,
+    "status": "未回答",
+    "question_ja": "UC には不正検知のため顧客注文を分析するチームがいる。このチームは Invoice（カスタムオブジェクト、OWD 非公開）へアクセスが必要で、複雑なアクセス制御ルールがあるため、アーキテクトは Apex マネージド共有を推奨した。\n\n実装時に開発者が考慮すべき推奨事項はどれか。（2つ選択）",
+    "choices": {
+      "A": "異なるユーザでのアクセスを検証するため、テストで runAs を使用する。",
+      "B": "レコード可視性が考慮されるよう、without sharing を使用する。",
+      "C": "常に共有ルールを評価するため、with sharing を使用する。",
+      "D": "FLS を強制するため、with sharing を使用する。"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "共有を守るには with sharing を適切に使う（without sharing は共有を無視し得る）。テストでは runAs を用いて権限差分や共有状態を検証する。with sharing はレコードレベルであり、FLS は別途 isAccessible 等が必要。"
+  },
+  {
+    "question_no": 43,
+    "status": "未回答",
+    "question_ja": "UC は Lead オブジェクトの標準コントローラを使うカスタム Visualforce アプリケーションを持つ。\n\nこのアプリケーションでオブジェクトレベルのセキュリティを確実に実装するため、アーキテクトは何をすべきか。",
+    "choices": {
+      "A": "Visualforce ページ内で {!$ObjectType.Lead.accessible} を使用する。",
+      "B": "Visualforce ページ定義で with sharing を使用する。",
+      "C": "Apex コントローラ内で Schema.DescribeSObjectResult の isAccessible() を使用する。",
+      "D": "Apex コントローラで権限を強制するため runAs() を使用する。"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "標準コントローラ自体は編集できないため、Visualforce 側で $ObjectType を使ってアクセス可否をチェックし、表示/編集 UI を制御するのが適切。"
+  },
+  {
+    "question_no": 44,
+    "status": "未回答",
+    "question_ja": "UC はデータストレージ用の仮想コンテナを販売するために拡張した。仮想コンテナの作業指示（Work Order）はシステムにより即時プロビジョニングされるため、営業担当者が変更できてはならない。\n\n最適な実装アプローチはどれか。",
+    "choices": {
+      "A": "Work Order のページレイアウトから［編集］ボタンを外す。",
+      "B": "共有ルールで全 Work Order を参照のみにする。",
+      "C": "営業担当者プロファイルから Work Order の編集権限を外す。",
+      "D": "Work Order のレコードタイプ/ページレイアウト割り当てを参照専用にする。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "対象ユーザのオブジェクト権限（編集）を外すのが最も確実で範囲も適切。ボタン削除は迂回され得る。"
+  },
+  {
+    "question_no": 45,
+    "status": "未回答",
+    "question_ja": "Mary はロール階層で Joe の上長である。カスタム Invoice オブジェクトの OWD は公開/参照のみだが、Mary のプロファイルには Invoice の参照（Read）権限が付与されていない。\n\nMary は Joe の Invoice レコードに対して何ができるか。",
+    "choices": {
+      "A": "何もできない",
+      "B": "参照のみ",
+      "C": "参照/編集",
+      "D": "編集のみ"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "オブジェクト権限（Read）がない場合、共有設定やロール階層がどうであってもレコードにはアクセスできない。"
+  },
+  {
+    "question_no": 46,
+    "status": "未回答",
+    "question_ja": "Cloud Kicks は Customer Community ライセンスで顧客向けコミュニティを開始した。サービスリクエストを格納するカスタムオブジェクトがあり、取引先（Account）への Lookup を持つ。外部共有（External Access）は非公開。\n\n顧客は自分の取引先に紐づくサービスリクエストだけを見られ、他取引先のリクエストは見られないようにしたい。Salesforce の機能を用いる場合、どう実装すべきか。",
+    "choices": {
+      "A": "新規コミュニティユーザ追加時に、サービスリクエストを手動共有する。",
+      "B": "共有セット（Sharing Set）で、コミュニティユーザのプロファイルに基づき取引先に関連するサービスリクエストを共有する。",
+      "C": "共有ルールで、ロールに基づきコミュニティユーザへ共有する。",
+      "D": "Apex マネージド共有で、適切なコミュニティユーザへ共有する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "共有セットは外部ユーザに対して、Account/Contact の関連（Lookup）に基づいて関連レコードを共有するための標準機能。要件に最適。"
+  },
+  {
+    "question_no": 47,
+    "status": "未回答",
+    "question_ja": "DreamHouse Realty は、機微情報をオンプレミスに保存しつつ、Salesforce からアクセス可能にしたい。\n\nどの技術を使えるか。",
+    "choices": {
+      "A": "Salesforce Shield ツールキットを実装する",
+      "B": "サードパーティのトークナイゼーションサービスを実装する",
+      "C": "サードパーティのプロキシサーバを実装する",
+      "D": "オンプレミスデータベースを実装する"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "Salesforce からオンプレ機微情報へアクセスする際、セキュアな中継・制御点としてプロキシサーバ（ゲートウェイ）パターンを用いるのが一般的。"
+  },
+  {
+    "question_no": 48,
+    "status": "未回答",
+    "question_ja": "UC のカスタム Visualforce ページはユーザ入力を受け取り、動的 SOQL を実行して結果を返す必要がある。\n\nSOQL インジェクションを防ぐために使うべき手法はどれか。（2つ選択）",
+    "choices": {
+      "A": "escapeSingleQuotes() を使ってユーザ入力をサニタイズする。",
+      "B": "SOQL にバインド変数（bind variables）を使用する。",
+      "C": "ユーザ入力のダブルクォートをエスケープする。",
+      "D": "コントローラに with sharing を指定する。"
+    },
+    "correct_answer": [
+      "A",
+      "B"
+    ],
+    "explanation_ja": "SOQL の構造と値を分離するバインド変数が最優先。動的構築が避けられない場合は escapeSingleQuotes() 等で入力をエスケープして注入を防ぐ。"
+  },
+  {
+    "question_no": 49,
+    "status": "未回答",
+    "question_ja": "UC のユーザが「最新プロジェクトをデプロイしたら取引先（Account）ページからある項目が消えた」と訴えている。ページレイアウト自体は変更していない。\n\n管理者はどのようにトラブルシュートすべきか。",
+    "choices": {
+      "A": "ユーザとしてログインし、複数の取引先レコードを確認して影響範囲を切り分ける。",
+      "B": "取引先のレコードタイプ変更を確認する。",
+      "C": "オブジェクトマネージャの「項目のアクセシビリティ（Field Accessibility）」で確認する。",
+      "D": "Who Sees What レポートを Account でフィルタして実行する。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "Field Accessibility は、FLS/ページレイアウト/レコードタイプ等を横断して「誰に見えるか」を確認できるため、項目が消えた原因調査に最適。"
+  },
+  {
+    "question_no": 50,
+    "status": "未回答",
+    "question_ja": "プログラム共有（Programmatic sharing）の有効なユースケースはどれか。（2つ選択）",
+    "choices": {
+      "A": "外部システムがユーザのレコードアクセスを管理する。",
+      "B": "組織再編によって所有者変更が頻繁に発生する。",
+      "C": "標準の共有機能では要件を満たせない。",
+      "D": "標準/カスタムオブジェクトの所有者を設定する。"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "外部システム主導のアクセス制御や、標準共有（OWD/共有ルール/チーム等）では表現できない複雑要件に対して、Apex による共有レコード作成が有効。"
+  },
+  {
+    "question_no": 51,
+    "status": "未回答",
+    "question_ja": "UC の管理者はリストビュー ListV1 と ListV2 を作成した。グループ1は ListV1 のみ、グループ2は ListV2 のみ閲覧できるようにしたい。公開グループを作成してリストビュー可視性を制限したが、両グループのユーザが両方のリストビューを見られてしまう。\n\nどのシステム権限が原因で「すべての公開リストビュー」が見えているか。",
+    "choices": {
+      "A": "Manage Custom List Views",
+      "B": "Manage Private List Views",
+      "C": "Manage Public List Views",
+      "D": "Manage Custom Permissions"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "「公開リストビューを管理（Manage Public List Views）」があると、公開リストビュー全体が見え、可視性制御を回避してしまう。"
+  },
+  {
+    "question_no": 52,
+    "status": "未回答",
+    "question_ja": "営業担当は営業プロセスの一環で大容量ファイルを扱うことがあり、メールでは共有できない。顧客へファイルリンクを共有したいが、CISO から「共有リンクはパスワード保護必須」と求められた。\n\nどう実現できるか。",
+    "choices": {
+      "A": "Experience Cloud サイトを用意し、Chatter で顧客に共有してサイトへログインさせる。",
+      "B": "コンテンツ配信（Content Delivery）を作成し、作成時にパスワード必須オプションを選択する。",
+      "C": "パスワード保護ファイル配信の AppExchange 製品を導入する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "Content Delivery は外部共有リンクにパスワードを要求できる標準機能で、追加のサイト構築や製品導入なしに要件を満たせる。"
+  },
+  {
+    "question_no": 53,
+    "status": "未回答",
+    "question_ja": "Visualforce ページをセキュアにするために、どのような手段を取るべきか。（3つ選択）",
+    "choices": {
+      "A": "クロスサイト（XSS）を手作業で確認する",
+      "B": "SQL インジェクションを手作業で確認する",
+      "C": "Force.com Security Scanner に提出する",
+      "D": "Web アプリケーションセキュリティツールを使用する",
+      "E": "デバッグログでハイジャックされたリクエストを確認する"
+    },
+    "correct_answer": [
+      "C",
+      "D",
+      "E"
+    ],
+    "explanation_ja": "自動スキャナ（Force.com Security Scanner）、一般的なWebセキュリティツール、ログ分析などの多面的な検証で脆弱性を発見・予防する。"
+  },
+  {
+    "question_no": 54,
+    "status": "未回答",
+    "question_ja": "UC は取引先（Account）を、フィールドオフィスのユーザへ自動で共有したい。現状：\n- Account の OWD は非公開。\n- フィールドオフィスは Account 上の Lookup 項目で表される。\n- フィールドオフィスは 400。\n- 各フィールドオフィスのユーザは公開グループで管理している。\n\nAccount の Lookup 項目に基づいて共有する最適な方法はどれか。",
+    "choices": {
+      "A": "手動共有でフィールドオフィスへ共有する。",
+      "B": "取引先チームでフィールドオフィスへ共有する。",
+      "C": "プログラム共有（Apex マネージド共有）でフィールドオフィスへ共有する。",
+      "D": "条件付き共有ルールでフィールドオフィスへ共有する。"
+    },
+    "correct_answer": [
+      "C"
+    ],
+    "explanation_ja": "Lookup 参照先（フィールドオフィス）に応じて多数のグループへ動的に共有する場合、標準の共有ルールでは表現しづらく、Apex による共有（Share レコード作成）が柔軟でスケーラブル。"
+  },
+  {
+    "question_no": 55,
+    "status": "未回答",
+    "question_ja": "関連性のないユーザ集合へアクセス権を付与する方法として適切なのはどれか。",
+    "choices": {
+      "A": "公開グループ（Public Groups）",
+      "B": "共有セット（Sharing Sets）",
+      "C": "ロール階層（Role Hierarchy）"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "公開グループはロール/テリトリなどの階層関係に依存しない任意のユーザ集合を作れる。共有セットは主にコミュニティユーザ向け。"
+  },
+  {
+    "question_no": 56,
+    "status": "未回答",
+    "question_ja": "ユーザAは、ユーザBのデフォルト取引先チームに含まれている。ユーザBは ACME 取引先を所有しており、取引先上でユーザAのチームメンバーアクセスを変更した。\n\nこの変更の影響はどれか。",
+    "choices": {
+      "A": "デフォルト商談チームに影響する。",
+      "B": "ACME 取引先のみに影響する。",
+      "C": "デフォルト取引先チームに影響する。",
+      "D": "ACME の子取引先すべてに影響する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "レコード上のチームアクセス変更はそのレコードに対してのみ適用され、デフォルトチーム設定や他レコードには影響しない。"
+  },
+  {
+    "question_no": 57,
+    "status": "未回答",
+    "question_ja": "UC は High-Volume Community ユーザのコミュニティを導入している。コミュニティユーザは自分の Account または Contact に関連するレコードを見られる必要があるため、共有セット（Sharing Set）を使う予定である。\n\n共有セットの「利用可能なオブジェクト（Available Objects）」一覧に、いくつかのオブジェクトが表示されない。\n\nオブジェクトが除外される理由はどれか。（2つ選択）",
+    "choices": {
+      "A": "カスタムオブジェクトは共有セットで利用できないため。",
+      "B": "そのオブジェクトの OWD が公開/参照・編集（Public Read/Write）に設定されているため。",
+      "C": "そのオブジェクトの OWD が非公開（Private）に設定されているため。",
+      "D": "そのカスタムオブジェクトが Account または Contact への Lookup を持たないため。"
+    },
+    "correct_answer": [
+      "B",
+      "D"
+    ],
+    "explanation_ja": "共有セットは Account/Contact との Lookup 関係が前提。さらに、OWD がすでに公開/参照・編集などで共有不要な場合は、共有セットの対象に出ないことがある。"
+  },
+  {
+    "question_no": 58,
+    "status": "未回答",
+    "question_ja": "UC は Account の共有設定を「公開/参照・編集」から「非公開」に変更し、特定の全国取引先（national accounts）を営業担当・営業マネージャから隠したい。全国取引先は営業ディレクター以上のみアクセス可能とする。UC のロール階層は組織階層と一致している。\n\n設計時に考慮すべき点はどれか。（2つ選択）",
+    "choices": {
+      "A": "営業ディレクターが営業ユーザ所有の取引先を見るため、共有ルールが必要になる。",
+      "B": "全国取引先は、ロール階層で営業マネージャより上位のユーザが所有する必要がある。",
+      "C": "全国取引先を保護するため、Account の Apex マネージド共有を無効化しなければならない。",
+      "D": "全国取引先に紐づく商談の商談チームに営業担当を追加すると、取引先データへのアクセスを得る可能性がある。"
+    },
+    "correct_answer": [
+      "B",
+      "D"
+    ],
+    "explanation_ja": "ロール階層に沿って可視性を制御するなら、全国取引先の所有者を上位ロールに置くことが重要。また、商談チームなど別経路の共有により取引先へアクセスが波及する可能性があるため、その影響も考慮が必要。"
+  },
+  {
+    "question_no": 59,
+    "status": "未回答",
+    "question_ja": "UC は統合により Account に 50 個のカスタム項目を自動投入するようになった。マネージャはレポーティングのためにこれらの項目へアクセスしたいが、ページレイアウトを項目で埋めたくない。\n\nアーキテクトは何を推奨すべきか。",
+    "choices": {
+      "A": "マネージャ用ページレイアウトに項目を追加し、そのセクションを折りたたみにする。",
+      "B": "ロールベース共有ルールで項目アクセスを付与し、ページレイアウトには置かない。",
+      "C": "カスタムレポートを作り、マネージャロールにレポートフォルダアクセスを付与する。",
+      "D": "FLS でマネージャに項目アクセスを付与し、ページレイアウトには追加しない。"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "項目の参照可否は FLS で制御でき、ページレイアウトに配置しなくてもレポート等で利用可能。UI を clutter させず要件を満たせる。"
+  },
+  {
+    "question_no": 60,
+    "status": "未回答",
+    "question_ja": "UC の営業担当は、同僚と自分の売上指標を比較できるダッシュボードを作成したい。共有モデルは非公開（Private）。\n\nこの要件を満たすために必要な権限はどれか。（2つ選択）",
+    "choices": {
+      "A": "Manage Custom Report Types",
+      "B": "Customize Application",
+      "C": "Manage Dashboards",
+      "D": "View All Data"
+    },
+    "correct_answer": [
+      "C",
+      "D"
+    ],
+    "explanation_ja": "ダッシュボード作成・管理には Manage Dashboards が必要。非公開モデルで同僚のデータまで比較するには、少なくとも View All Data のように広範な参照権限が必要になる。"
+  },
+  {
+    "question_no": 61,
+    "status": "未回答",
+    "question_ja": "OWD が「公開/参照・編集（Public Read/Write）」のカスタムオブジェクトに対してアクセスを制限するために必要な Salesforce の機能はどれか。",
+    "choices": {
+      "A": "ロール階層",
+      "B": "レコードタイプ",
+      "C": "ページレイアウト",
+      "D": "プロファイル"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "OWD が公開でも、オブジェクト権限（参照/編集など）はプロファイル/権限セットで制御される。まずプロファイルでアクセスを制限する。"
+  },
+  {
+    "question_no": 62,
+    "status": "未回答",
+    "question_ja": "Salesforce で取引先（Account）の重複が多く、共有ルールも多数作られている。理由として最も妥当なのはどれか。",
+    "choices": {
+      "A": "Account の OWD が非公開（Private）であるため",
+      "B": "Account の OWD が公開/参照・編集であるため",
+      "C": "Account の OWD が公開/参照のみであるため",
+      "D": "Account のオブジェクト権限が作成・参照・編集であるため"
+    },
+    "correct_answer": [
+      "A"
+    ],
+    "explanation_ja": "OWD が非公開だと既存レコードを見つけられず重複作成しやすく、可視性補完のため共有ルールが増える傾向がある。"
+  },
+  {
+    "question_no": 63,
+    "status": "未回答",
+    "question_ja": "UC は、特定プロファイル（Custom Sales Department）のユーザに商談（Opportunity）を削除させたくない。\n\nどのように防ぐべきか。",
+    "choices": {
+      "A": "商談ページレイアウトとレコードタイプ設定から［削除］ボタンを外す。",
+      "B": "IsDeleted が True になる前にプロファイルをチェックする検証ルールを作る。",
+      "C": "標準ボタンを Visualforce で上書きし、削除不可の警告を出す。",
+      "D": "プロファイルのオブジェクト権限で「商談の削除（Delete）」権限を外す。"
+    },
+    "correct_answer": [
+      "D"
+    ],
+    "explanation_ja": "削除可否はオブジェクト権限（Delete）で制御するのが正攻法。UI ボタン削除は迂回される可能性がある。"
+  },
+  {
+    "question_no": 64,
+    "status": "未回答",
+    "question_ja": "Group Maintenance テーブルに保存されるアクセス付与（access grants）はどれか。（2つ選択）",
+    "choices": {
+      "A": "継承されたアクセス付与（Inherited access grants）",
+      "B": "明示的な付与（Explicit grants）",
+      "C": "グループメンバーシップ付与（Group Membership grants）",
+      "D": "暗黙付与（Implicit grants）"
+    },
+    "correct_answer": [
+      "A",
+      "C"
+    ],
+    "explanation_ja": "Group Maintenance は、グループ/階層にもとづく継承アクセスや、グループメンバーシップによる付与など、共有計算の基盤となる付与情報を保持する。"
+  },
+  {
+    "question_no": 65,
+    "status": "未回答",
+    "question_ja": "UC の営業担当は、特定の案件を進める際にプロダクトマネージャの支援が必要になる。共有モデルは非公開で、プロダクトマネージャは自分が所有していない商談にアクセスできないが、支援が必要な案件に限ってアクセスできるようにしたい。\n\nアーキテクトはどう実現すべきか。",
+    "choices": {
+      "A": "共有ルールを作成し、プロダクトマネージャに商談アクセスを付与する。",
+      "B": "商談チーム（Opportunity Teams）を有効化し、営業担当がプロダクトマネージャを追加できるようにする。",
+      "C": "取引先チーム（Account Teams）を有効化し、営業担当がプロダクトマネージャを追加できるようにする。",
+      "D": "類似商談（similar opportunities）を使ってプロダクトマネージャ関連の商談を共有する。"
+    },
+    "correct_answer": [
+      "B"
+    ],
+    "explanation_ja": "商談チームは個別商談単位で必要なメンバーを追加し、適切なアクセス権を付与できるため、限定的な協業要件に最適。"
+  }
+]
