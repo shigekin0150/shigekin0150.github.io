@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>極・瓦割り</title>
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <h1>瓦 1000枚抜き</h1>
+        <div id="score-board">割った枚数: <span id="count">0</span> 枚</div>
+        
+        <div class="power-meter">
+            <div id="gauge"></div>
+            <div class="target-zone"></div>
+        </div>
+
+        <div class="stage">
+            <div id="character">🥋</div>
+            <div id="tile-stack">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+
+        <button id="action-btn">正拳突き！！</button>
+        <p class="hint">中央の赤いゾーンで叩け！</p>
+        <a href="index.html" class="back-link">模擬試験に戻る</a>
+    </div>
+    <script src="js/game.js"></script>
+</body>
+</html>
