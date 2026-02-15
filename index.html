@@ -1,16 +1,143 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>Salesforce 模擬問題一覧</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salesforce 模擬問題一覧</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif; margin: 0; background:#f6f7f9; }
+    .container { max-width: 980px; margin: 0 auto; padding: 20px; }
+    h1 { margin: 6px 0 14px; }
+    .meta { color:#666; font-size: 14px; margin-bottom: 16px; }
+    .question-card {
+      background:#fff;
+      border: 1px solid #e3e5e8;
+      border-radius: 12px;
+      padding: 14px 14px;
+      margin: 12px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .question-title { font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+    .choices { margin-left: 8px; }
+    .choice-item { margin: 6px 0; padding: 6px 10px; border-left: 3px solid #e3e5e8; background:#fafbfc; border-radius: 8px; }
+    .error { color: #b00020; background: #ffe9ec; border: 1px solid #ffb6c1; padding: 10px 12px; border-radius: 10px; }
+    .small { font-size: 12px; color:#777; margin-top: 8px; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Salesforce 模擬問題一覧</h1>
-        <div id="question-list"></div>
-    </div>
+  <div class="container">
+    <h1>Salesforce 模擬問題一覧</h1>
+    <div id="meta" class="meta">読み込み中…</div>
+    <div id="question-list"></div>
+    <div id="err" class="error" style="display:none;"></div>
+    <div class="small">※このページは「問題と選択肢を羅列」するだけです（採点・解説表示なし）。</div>
+  </div>
 
-    <script src="js/app.js"></script>
+  <script>
+    // ★ JSONの場所だけここで変更
+    const dataPath = "data/sharing_and_visibility_exams.json";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch(dataPath, { cache: "no-store" });
+        if (!res.ok) throw new Error("JSON読み込み失敗: " + res.status);
+
+        const raw = await res.json();
+        const { questions, generatedAt } = extractQuestions(raw);
+
+        renderMeta(questions.length, generatedAt);
+        renderQuestions(questions);
+      } catch (e) {
+        showError("エラー：JSONが見つからないか、形式が正しくありません。\n" + e);
+        console.error(e);
+      }
+    });
+
+    function extractQuestions(raw) {
+      let merged = [];
+      let generatedAt = null;
+
+      // 形式A: [ { generated_at, questions:[...] }, ... ]
+      if (Array.isArray(raw)) {
+        raw.forEach(item => {
+          if (item && typeof item === "object") {
+            if (!generatedAt && item.generated_at) generatedAt = item.generated_at;
+            if (Array.isArray(item.questions)) merged.push(...item.questions);
+          }
+        });
+      }
+      // 形式B: { generated_at, questions:[...] }
+      else if (raw && typeof raw === "object") {
+        if (raw.generated_at) generatedAt = raw.generated_at;
+        if (Array.isArray(raw.questions)) merged = raw.questions;
+      }
+
+      // 形式C: すでに問題配列（念のため）
+      if (Array.isArray(raw) && raw.length && raw[0] && raw[0].question_ja) {
+        merged = raw;
+      }
+
+      // null/undefined/非オブジェクトを除外
+      merged = merged.filter(q => q && typeof q === "object");
+
+      return { questions: merged, generatedAt };
+    }
+
+    function renderMeta(count, generatedAt) {
+      const meta = document.getElementById("meta");
+      const gen = generatedAt ? ` / generated_at: ${generatedAt}` : "";
+      meta.textContent = `問題数: ${count}${gen}`;
+    }
+
+    function renderQuestions(questions) {
+      const container = document.getElementById("question-list");
+      container.innerHTML = "";
+
+      if (!questions.length) {
+        container.innerHTML = '<div class="error">問題データが見つかりません（JSON構造を確認してください）。</div>';
+        return;
+      }
+
+      questions.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.textContent = `Q${q.question_no ?? (idx + 1)}. ${q.question_ja || "問題文なし"}`;
+        card.appendChild(title);
+
+        const choicesWrap = document.createElement("div");
+        choicesWrap.className = "choices";
+
+        // あなたのJSONは choices_ja
+        const choices = q.choices_ja;
+
+        if (choices && typeof choices === "object" && !Array.isArray(choices)) {
+          Object.entries(choices).forEach(([key, value]) => {
+            const item = document.createElement("div");
+            item.className = "choice-item";
+            item.textContent = `${key}: ${value}`;
+            choicesWrap.appendChild(item);
+          });
+        } else {
+          const item = document.createElement("div");
+          item.className = "choice-item";
+          item.textContent = "（選択肢データなし / 形式不正）";
+          choicesWrap.appendChild(item);
+        }
+
+        card.appendChild(choicesWrap);
+        container.appendChild(card);
+      });
+    }
+
+    function showError(msg) {
+      const err = document.getElementById("err");
+      err.style.display = "block";
+      err.textContent = msg;
+      document.getElementById("meta").textContent = "読み込み失敗";
+    }
+  </script>
 </body>
 </html>
