@@ -6,88 +6,277 @@
 <title>Salesforce 模擬問題</title>
 
 <style>
-body { font-family: system-ui; margin:0; background:#f6f7f9; }
-.container { max-width: 900px; margin:auto; padding:20px; }
+/* =========================
+   Salesforce × Space Theme
+   ========================= */
+:root{
+  --bg: #070b18;
+  --surface: rgba(255,255,255,.06);
+  --surface2: rgba(255,255,255,.09);
+  --card: rgba(255,255,255,.08);
+  --border: rgba(255,255,255,.12);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.62);
+  --accent: #46a6ff;     /* Salesforce-ish blue */
+  --accent2:#7c5cff;     /* Nebula purple */
+  --ok: #22c55e;
+  --ng: #fb7185;
+  --shadow: 0 14px 34px rgba(0,0,0,.35);
+  --radius: 16px;
+}
 
-.topbar {
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(70,166,255,.28), transparent 60%),
+    radial-gradient(900px 600px at 90% 20%, rgba(124,92,255,.22), transparent 55%),
+    radial-gradient(900px 600px at 60% 95%, rgba(34,197,94,.12), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
+    var(--bg);
+  overflow-x:hidden;
+}
+
+/* stars */
+body:before{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.55) 45%, transparent 46%),
+    radial-gradient(1px 1px at 35% 80%, rgba(255,255,255,.35) 45%, transparent 46%),
+    radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,.45) 45%, transparent 46%),
+    radial-gradient(2px 2px at 85% 70%, rgba(255,255,255,.30) 45%, transparent 46%),
+    radial-gradient(1px 1px at 55% 55%, rgba(255,255,255,.25) 45%, transparent 46%),
+    radial-gradient(1px 1px at 25% 50%, rgba(255,255,255,.28) 45%, transparent 46%);
+  opacity:.45;
+  filter: blur(.1px);
+  pointer-events:none;
+  transform: rotate(2deg);
+  z-index:-1;
+}
+
+.container{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 26px 16px 90px;
+}
+
+.topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:20px;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface2), var(--surface));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 12px;
+  z-index: 10;
 }
 
-select {
-  padding:6px 10px;
-  border-radius:6px;
-  border:1px solid #ccc;
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  min-width: 0;
+}
+.badge{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background:
+    radial-gradient(18px 18px at 30% 35%, rgba(70,166,255,.95), rgba(70,166,255,.10)),
+    radial-gradient(20px 20px at 70% 70%, rgba(124,92,255,.85), rgba(124,92,255,.10)),
+    rgba(0,0,0,.20);
+  box-shadow: 0 14px 24px rgba(0,0,0,.25);
+  position: relative;
+  overflow:hidden;
+}
+.badge:after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+  transform: rotate(18deg);
+}
+h1{
+  margin:0;
+  font-size: 18px;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sub{
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
 }
 
-.question-card {
-  background:#fff;
-  border-radius:12px;
-  padding:15px;
-  margin:15px 0;
-  border:1px solid #ddd;
+select{
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,.22);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  outline: none;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+}
+select:focus{
+  border-color: rgba(70,166,255,.65);
+  box-shadow: 0 0 0 4px rgba(70,166,255,.18);
 }
 
-.question-title { font-weight:700; margin-bottom:10px; }
+/* Card */
+.question-card{
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
+  box-shadow: var(--shadow);
+  padding: 18px 16px;
+  margin: 14px 0;
+  position: relative;
+  overflow:hidden;
+}
+.question-card:before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background:
+    radial-gradient(600px 140px at 30% -30%, rgba(70,166,255,.18), transparent 60%),
+    radial-gradient(600px 140px at 80% 120%, rgba(124,92,255,.16), transparent 60%);
+  pointer-events:none;
+}
+.question-title{
+  position:relative;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
 
-.choice-item {
-  margin:6px 0;
-  padding:6px 10px;
-  border-radius:6px;
+/* choices */
+.choice-item{
+  position:relative;
+  display:flex;
+  gap: 10px;
+  align-items:flex-start;
+  padding: 12px 12px;
+  margin: 10px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
   cursor:pointer;
-  border:1px solid #ddd;
+  transition: transform .06s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  user-select:none;
+}
+.choice-item:hover{
+  transform: translateY(-1px);
+  border-color: rgba(70,166,255,.45);
+  background: rgba(70,166,255,.10);
+}
+.choice-item.selected{
+  border-color: rgba(70,166,255,.85);
+  background: rgba(70,166,255,.22);
+  box-shadow: 0 0 0 4px rgba(70,166,255,.14);
+}
+.choice-key{
+  min-width: 2.2em;
+  display:inline-block;
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+}
+.choice-val{
+  color: rgba(255,255,255,.86);
+  line-height:1.45;
 }
 
-.choice-item.selected {
-  background:#e3f2fd;
-  border-color:#1976d2;
+/* button */
+button{
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(70,166,255,.95), rgba(70,166,255,.70));
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform .06s ease, filter .2s ease, opacity .2s ease;
+  box-shadow: 0 12px 18px rgba(70,166,255,.16);
+}
+button:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+button:active{ transform: translateY(0px); }
+button:disabled{
+  opacity:.55;
+  cursor: default;
+  filter: grayscale(.2);
+  box-shadow: none;
 }
 
-button {
-  margin-top:10px;
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  background:#1976d2;
-  color:white;
-  cursor:pointer;
-}
-
-.feedback {
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
-  background:#f1f1f1;
+/* feedback */
+.feedback{
+  margin-top: 12px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.22);
   display:none;
+  line-height: 1.65;
+  color: var(--text);
+}
+.correct { color: var(--ok); font-weight: 950; }
+.incorrect { color: var(--ng); font-weight: 950; }
+.meta-line{
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 10px;
 }
 
-.correct { color:green; font-weight:bold; }
-.incorrect { color:red; font-weight:bold; }
-
+/* mobile */
+@media (max-width: 560px){
+  .topbar{ flex-direction: column; align-items: stretch; }
+  select{ width: 100%; }
+  h1{ font-size: 16px; }
+  .question-title{ font-size: 15px; }
+}
 </style>
 </head>
+
 <body>
-
 <div class="container">
+  <div class="topbar">
+    <div class="brand">
+      <div class="badge" aria-hidden="true"></div>
+      <div style="min-width:0">
+        <h1>Salesforce 模擬問題</h1>
+        <div class="sub">Launch your knowledge 🚀（宇宙兄弟っぽく、淡々と積み上げる）</div>
+      </div>
+    </div>
 
-<div class="topbar">
-  <h1>Salesforce 模擬問題</h1>
+    <!-- 資格切り替え -->
+    <select id="exam-select">
+      <option value="sharing">Sharing & Visibility</option>
+      <option value="pd1">Platform Developer I（将来）</option>
+    </select>
+  </div>
 
-  <!-- 資格切り替え -->
-  <select id="exam-select">
-    <option value="sharing">Sharing & Visibility</option>
-    <option value="pd1">Platform Developer I（将来）</option>
-  </select>
-</div>
-
-<div id="question-list"></div>
-
+  <div id="question-list"></div>
+  <div class="meta-line">※「答えを見る」を押すまで、正解と解説は表示されません。</div>
 </div>
 
 <script>
-
 const examFiles = {
   sharing: "data/sharing_and_visibility_exams.json",
   pd1: "data/pd1_exams.json"
@@ -97,7 +286,6 @@ let currentQuestions = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   loadExam("sharing");
-
   document.getElementById("exam-select").addEventListener("change", (e) => {
     loadExam(e.target.value);
   });
@@ -105,7 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadExam(key) {
   const file = examFiles[key];
-
   try {
     const res = await fetch(file, { cache: "no-store" });
     const raw = await res.json();
@@ -113,22 +300,22 @@ async function loadExam(key) {
     renderQuestions(currentQuestions);
   } catch (e) {
     document.getElementById("question-list").innerHTML =
-      "<p>問題ファイルがまだ存在しません。</p>";
+      `<div class="question-card"><div class="question-title">問題ファイルがまだ存在しません。</div>
+       <div class="choice-item" style="cursor:default">data/${key}_exams.json を作成すると表示されます。</div></div>`;
+    console.error(e);
   }
 }
 
 function extractQuestions(raw) {
   let merged = [];
-
   if (Array.isArray(raw)) {
     raw.forEach(item => {
-      if (item.questions) merged.push(...item.questions);
+      if (item && Array.isArray(item.questions)) merged.push(...item.questions);
     });
     if (raw.length && raw[0]?.question_ja) merged = raw;
-  } else if (raw.questions) {
+  } else if (raw && Array.isArray(raw.questions)) {
     merged = raw.questions;
   }
-
   return merged.filter(q => q && q.question_ja);
 }
 
@@ -137,41 +324,35 @@ function renderQuestions(questions) {
   container.innerHTML = "";
 
   questions.forEach((q, index) => {
-
     const card = document.createElement("div");
     card.className = "question-card";
 
     const title = document.createElement("div");
     title.className = "question-title";
-    title.textContent = `Q${q.question_no ?? index+1}. ${q.question_ja}`;
+    title.textContent = `Q${q.question_no ?? index + 1}. ${q.question_ja}`;
     card.appendChild(title);
 
     const selected = [];
     const isMultiple = (q.correct_answers || []).length > 1;
 
     Object.entries(q.choices_ja || {}).forEach(([key, value]) => {
-
       const item = document.createElement("div");
       item.className = "choice-item";
-      item.textContent = `${key}: ${value}`;
+      item.innerHTML = `<span class="choice-key">${key}</span><span class="choice-val">${escapeHtml(String(value))}</span>`;
 
       item.onclick = () => {
-
         if (!isMultiple) {
           selected.length = 0;
-          card.querySelectorAll(".choice-item")
-              .forEach(el => el.classList.remove("selected"));
+          card.querySelectorAll(".choice-item").forEach(el => el.classList.remove("selected"));
         }
-
         if (selected.includes(key)) {
-          selected.splice(selected.indexOf(key),1);
+          selected.splice(selected.indexOf(key), 1);
           item.classList.remove("selected");
         } else {
           selected.push(key);
           item.classList.add("selected");
         }
       };
-
       card.appendChild(item);
     });
 
@@ -184,7 +365,6 @@ function renderQuestions(questions) {
     card.appendChild(feedback);
 
     button.onclick = () => {
-
       if (selected.length === 0) {
         alert("回答を選択してください");
         return;
@@ -201,9 +381,9 @@ function renderQuestions(questions) {
         feedback.innerHTML = `<div class="incorrect">❌ 不正解</div>`;
       }
 
-      feedback.innerHTML += `<div>あなた: ${user}</div>`;
-      feedback.innerHTML += `<div>正解: ${correct}</div>`;
-      feedback.innerHTML += `<div style="margin-top:8px;">${q.explanation_ja || ""}</div>`;
+      feedback.innerHTML += `<div>あなた: <b>${escapeHtml(user)}</b></div>`;
+      feedback.innerHTML += `<div>正解: <b>${escapeHtml(correct)}</b></div>`;
+      feedback.innerHTML += `<div style="margin-top:8px; white-space:pre-wrap;">${escapeHtml(q.explanation_ja || "")}</div>`;
 
       button.disabled = true;
       button.textContent = "確認済み";
@@ -213,7 +393,15 @@ function renderQuestions(questions) {
   });
 }
 
+// HTMLエスケープ（念のため）
+function escapeHtml(str){
+  return str
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 </script>
-
 </body>
 </html>
