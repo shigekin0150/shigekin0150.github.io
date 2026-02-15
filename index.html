@@ -2,40 +2,15 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salesforce 模擬試験アプリ</title>
+    <title>Salesforce 模擬問題一覧</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Salesforce 模擬試験</h1>
-        <div id="setup-container">
-            <p>準備が整いました。開始ボタンを押してください。</p>
-            <button id="start-btn">試験を開始する</button>
-        </div>
-
-        <div id="quiz-container" class="hidden">
-            <div class="stats">
-                問題: <span id="current-pos">1</span> / <span id="total-questions">0</span>
-            </div>
-            <div id="question-text" class="question"></div>
-            <div id="choices-container" class="choices"></div>
-            
-            <button id="submit-btn" class="hidden">回答をチェック</button>
-            
-            <div id="result-container" class="result hidden">
-                <div id="judgement"></div>
-                <div id="explanation" class="explanation"></div>
-                <button id="next-btn">次の問題へ</button>
-            </div>
-        </div>
-
-        <div id="summary-container" class="hidden">
-            <h2>結果発表</h2>
-            <p id="final-score"></p>
-            <button onclick="location.reload()">最初から解き直す</button>
-        </div>
+        <h1>Salesforce 模擬問題一覧</h1>
+        <div id="question-list"></div>
     </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>
