@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Salesforce 模擬問題</title>
 
 <style>
 /* =========================
    Salesforce × Space Theme
+   iPhone commute optimized
    ========================= */
 :root{
   --bg: #070b18;
   --surface: rgba(255,255,255,.06);
   --surface2: rgba(255,255,255,.09);
-  --card: rgba(255,255,255,.08);
   --border: rgba(255,255,255,.12);
   --text: rgba(255,255,255,.92);
   --muted: rgba(255,255,255,.62);
@@ -39,6 +39,10 @@ body{
     linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
     var(--bg);
   overflow-x:hidden;
+
+  /* iOS: 文字サイズ勝手に変えない & 慣性スクロール */
+  -webkit-text-size-adjust: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* stars */
@@ -63,7 +67,7 @@ body:before{
 .container{
   max-width: 980px;
   margin: 0 auto;
-  padding: 26px 16px 90px;
+  padding: 26px 16px 90px; /* 下はフッター分余白 */
 }
 
 .topbar{
@@ -131,8 +135,9 @@ select{
   padding: 10px 12px;
   border-radius: 12px;
   outline: none;
-  font-weight: 700;
+  font-weight: 800;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  min-height: 48px; /* iPhoneタップ最適化 */
 }
 select:focus{
   border-color: rgba(70,166,255,.65);
@@ -162,8 +167,8 @@ select:focus{
 .question-title{
   position:relative;
   font-size: 16px;
-  font-weight: 900;
-  line-height: 1.5;
+  font-weight: 950;
+  line-height: 1.55;
   margin: 0 0 12px;
 }
 
@@ -173,7 +178,7 @@ select:focus{
   display:flex;
   gap: 10px;
   align-items:flex-start;
-  padding: 12px 12px;
+  padding: 14px 14px; /* 片手で押しやすい */
   margin: 10px 0;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,.10);
@@ -181,6 +186,7 @@ select:focus{
   cursor:pointer;
   transition: transform .06s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   user-select:none;
+  min-height: 48px; /* iPhone推奨 */
 }
 .choice-item:hover{
   transform: translateY(-1px);
@@ -195,30 +201,32 @@ select:focus{
 .choice-key{
   min-width: 2.2em;
   display:inline-block;
-  font-weight: 900;
+  font-weight: 950;
   color: rgba(255,255,255,.92);
 }
 .choice-val{
   color: rgba(255,255,255,.86);
-  line-height:1.45;
+  line-height:1.5;
+  font-size: 15px;
 }
 
-/* button */
-button{
+/* button inside card (PC向け) */
+button.card-btn{
   margin-top: 12px;
   padding: 10px 14px;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(70,166,255,.95), rgba(70,166,255,.70));
   color: white;
-  font-weight: 900;
+  font-weight: 950;
   cursor: pointer;
   transition: transform .06s ease, filter .2s ease, opacity .2s ease;
   box-shadow: 0 12px 18px rgba(70,166,255,.16);
+  min-height: 48px;
 }
-button:hover{ filter: brightness(1.06); transform: translateY(-1px); }
-button:active{ transform: translateY(0px); }
-button:disabled{
+button.card-btn:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+button.card-btn:active{ transform: translateY(0px); }
+button.card-btn:disabled{
   opacity:.55;
   cursor: default;
   filter: grayscale(.2);
@@ -244,12 +252,50 @@ button:disabled{
   margin-top: 10px;
 }
 
-/* mobile */
+/* ===== iPhone commute: fixed footer ===== */
+.mobile-footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(7,11,24,0), rgba(7,11,24,.85) 40%, rgba(7,11,24,.92));
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,.10);
+  display: none; /* JSでモバイルのみ表示 */
+  z-index: 999;
+}
+.mobile-footer .row{
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+}
+.mobile-footer button{
+  flex: 1;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 950;
+  min-height: 52px;
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+  cursor: pointer;
+}
+.mobile-footer button.primary{
+  background: linear-gradient(180deg, rgba(70,166,255,.95), rgba(70,166,255,.70));
+  box-shadow: 0 12px 18px rgba(70,166,255,.16);
+}
+.mobile-footer button.ghost{
+  background: rgba(255,255,255,.10);
+  box-shadow: none;
+}
+
 @media (max-width: 560px){
-  .topbar{ flex-direction: column; align-items: stretch; }
-  select{ width: 100%; }
+  .container{ padding: 16px 12px 120px; }
+  .topbar{ top: 8px; padding: 12px; flex-direction: column; align-items: stretch; }
   h1{ font-size: 16px; }
   .question-title{ font-size: 15px; }
+  select{ width: 100%; }
 }
 </style>
 </head>
@@ -261,12 +307,12 @@ button:disabled{
       <div class="badge" aria-hidden="true"></div>
       <div style="min-width:0">
         <h1>Salesforce 模擬問題</h1>
-        <div class="sub">Launch your knowledge 🚀（宇宙兄弟っぽく、淡々と積み上げる）</div>
+        <div class="sub">Launch your knowledge 🚀（通勤で積み上げる）</div>
       </div>
     </div>
 
     <!-- 資格切り替え -->
-    <select id="exam-select">
+    <select id="exam-select" aria-label="資格を選択">
       <option value="sharing">Sharing & Visibility</option>
       <option value="pd1">Platform Developer I（将来）</option>
     </select>
@@ -276,49 +322,107 @@ button:disabled{
   <div class="meta-line">※「答えを見る」を押すまで、正解と解説は表示されません。</div>
 </div>
 
+<!-- iPhone向け固定フッター -->
+<div class="mobile-footer" id="mobile-footer">
+  <div class="row">
+    <button class="ghost" id="jump-next" type="button">次へ</button>
+    <button class="primary" id="show-answer" type="button">答えを見る</button>
+  </div>
+</div>
+
 <script>
+/**
+ * 1HTMLで資格を切替して使う想定
+ * - sharing: data/sharing_and_visibility_exams.json
+ * - pd1:     data/pd1_exams.json（将来）
+ */
 const examFiles = {
   sharing: "data/sharing_and_visibility_exams.json",
   pd1: "data/pd1_exams.json"
 };
 
 let currentQuestions = [];
+let currentCardIndex = 0;
 
+// ============ Boot ============
 document.addEventListener("DOMContentLoaded", () => {
   loadExam("sharing");
+
   document.getElementById("exam-select").addEventListener("change", (e) => {
     loadExam(e.target.value);
   });
+
+  updateFooterVisibility();
+  window.addEventListener("resize", updateFooterVisibility);
+
+  // スクロールで「今の問題」を追従（モバイルのみ）
+  window.addEventListener("scroll", () => {
+    if (!isMobile()) return;
+    setCurrentIndexByViewport();
+  }, { passive: true });
+
+  // フッター操作
+  document.getElementById("show-answer").addEventListener("click", () => {
+    const card = getCards()[currentCardIndex];
+    if (!card) return;
+    const btn = card.querySelector("button.card-btn");
+    if (btn && !btn.disabled) btn.click();
+  });
+
+  document.getElementById("jump-next").addEventListener("click", () => {
+    const cards = getCards();
+    const next = cards[Math.min(currentCardIndex + 1, cards.length - 1)];
+    if (!next) return;
+    next.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 });
 
+// ============ Data Load ============
 async function loadExam(key) {
   const file = examFiles[key];
+
   try {
     const res = await fetch(file, { cache: "no-store" });
+    if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
     const raw = await res.json();
+
     currentQuestions = extractQuestions(raw);
     renderQuestions(currentQuestions);
+
+    // 読み込み直後は先頭を現在位置に
+    currentCardIndex = 0;
+    if (isMobile()) setTimeout(setCurrentIndexByViewport, 50);
   } catch (e) {
     document.getElementById("question-list").innerHTML =
-      `<div class="question-card"><div class="question-title">問題ファイルがまだ存在しません。</div>
-       <div class="choice-item" style="cursor:default">data/${key}_exams.json を作成すると表示されます。</div></div>`;
+      `<div class="question-card">
+        <div class="question-title">問題ファイルがまだ存在しません。</div>
+        <div class="choice-item" style="cursor:default">"${escapeHtml(file)}" を作成すると表示されます。</div>
+      </div>`;
     console.error(e);
   }
 }
 
 function extractQuestions(raw) {
   let merged = [];
+
+  // 形式: [ {generated_at, questions:[...]}, ... ]
   if (Array.isArray(raw)) {
     raw.forEach(item => {
       if (item && Array.isArray(item.questions)) merged.push(...item.questions);
     });
+
+    // 形式: [ {question_ja, ...}, ... ] にも対応
     if (raw.length && raw[0]?.question_ja) merged = raw;
-  } else if (raw && Array.isArray(raw.questions)) {
+  }
+  // 形式: { questions:[...] }
+  else if (raw && Array.isArray(raw.questions)) {
     merged = raw.questions;
   }
+
   return merged.filter(q => q && q.question_ja);
 }
 
+// ============ Render ============
 function renderQuestions(questions) {
   const container = document.getElementById("question-list");
   container.innerHTML = "";
@@ -329,22 +433,27 @@ function renderQuestions(questions) {
 
     const title = document.createElement("div");
     title.className = "question-title";
-    title.textContent = `Q${q.question_no ?? index + 1}. ${q.question_ja}`;
+    title.textContent = `Q${q.question_no ?? (index + 1)}. ${q.question_ja}`;
     card.appendChild(title);
 
+    // 選択管理（カードごと）
     const selected = [];
     const isMultiple = (q.correct_answers || []).length > 1;
 
-    Object.entries(q.choices_ja || {}).forEach(([key, value]) => {
+    // choices_ja（あなたのJSONに合わせる）
+    const choices = q.choices_ja || {};
+    Object.entries(choices).forEach(([key, value]) => {
       const item = document.createElement("div");
       item.className = "choice-item";
-      item.innerHTML = `<span class="choice-key">${key}</span><span class="choice-val">${escapeHtml(String(value))}</span>`;
+      item.innerHTML = `<span class="choice-key">${escapeHtml(String(key))}</span>
+                        <span class="choice-val">${escapeHtml(String(value))}</span>`;
 
       item.onclick = () => {
         if (!isMultiple) {
           selected.length = 0;
           card.querySelectorAll(".choice-item").forEach(el => el.classList.remove("selected"));
         }
+
         if (selected.includes(key)) {
           selected.splice(selected.indexOf(key), 1);
           item.classList.remove("selected");
@@ -353,18 +462,22 @@ function renderQuestions(questions) {
           item.classList.add("selected");
         }
       };
+
       card.appendChild(item);
     });
 
-    const button = document.createElement("button");
-    button.textContent = "答えを見る";
-    card.appendChild(button);
+    // PC向け（カード内）ボタン。iPhoneはフッターから押すけど、ロジック流用のため残す
+    const btn = document.createElement("button");
+    btn.className = "card-btn";
+    btn.type = "button";
+    btn.textContent = "答えを見る";
+    card.appendChild(btn);
 
     const feedback = document.createElement("div");
     feedback.className = "feedback";
     card.appendChild(feedback);
 
-    button.onclick = () => {
+    btn.onclick = () => {
       if (selected.length === 0) {
         alert("回答を選択してください");
         return;
@@ -385,17 +498,50 @@ function renderQuestions(questions) {
       feedback.innerHTML += `<div>正解: <b>${escapeHtml(correct)}</b></div>`;
       feedback.innerHTML += `<div style="margin-top:8px; white-space:pre-wrap;">${escapeHtml(q.explanation_ja || "")}</div>`;
 
-      button.disabled = true;
-      button.textContent = "確認済み";
+      btn.disabled = true;
+      btn.textContent = "確認済み";
     };
 
     container.appendChild(card);
   });
 }
 
-// HTMLエスケープ（念のため）
+// ============ iPhone fixed footer logic ============
+function isMobile() {
+  return window.matchMedia("(max-width: 560px)").matches;
+}
+
+function updateFooterVisibility() {
+  const footer = document.getElementById("mobile-footer");
+  footer.style.display = isMobile() ? "block" : "none";
+}
+
+function getCards() {
+  return Array.from(document.querySelectorAll(".question-card"));
+}
+
+function setCurrentIndexByViewport() {
+  const cards = getCards();
+  if (!cards.length) return;
+
+  let best = 0;
+  let bestDist = Infinity;
+
+  cards.forEach((c, i) => {
+    const r = c.getBoundingClientRect();
+    const dist = Math.abs(r.top - 90); // sticky topbar下あたりを基準
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+
+  currentCardIndex = best;
+}
+
+// ============ Utils ============
 function escapeHtml(str){
-  return str
+  return String(str)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
